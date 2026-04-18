@@ -3,18 +3,18 @@ import { Rss, Share2, Globe, MessagesSquare } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="w-full text-white pt-24 pb-8 px-6 md:px-16" style={{ backgroundColor: "#3c2463" }}>
+    <footer className="w-full text-white pt-24 pb-8 px-6 md:px-16 bg-gradient-to-t from-black via-[#5634A3] to-[#5634A3]">
       <div className="w-full flex flex-col">
-        
+
         <div className="w-full flex flex-col md:flex-row justify-between mb-16 gap-12">
-          
+
           <div className="max-w-xs flex flex-col gap-6">
             <div className="relative h-16 w-32">
-              <Image 
-                src="/assets/logo.png" 
-                alt="ADHD PROUD" 
-                fill 
-                className="object-contain object-left brightness-0 invert" 
+              <Image
+                src="/assets/logo.png"
+                alt="ADHD PROUD"
+                fill
+                className="object-contain object-left brightness-0 invert"
               />
             </div>
             <p className="text-white/80 text-sm font-medium">

@@ -83,14 +83,16 @@ export default function Shop() {
   return (
     <main className="min-h-screen flex flex-col bg-white">
       <Navbar bg="bg-[#808080]" />
-      
+
       <div className="w-full px-6 md:px-16 py-16 pt-28">
-        <h1 className="font-heading text-5xl font-bold uppercase tracking-wide text-black mb-2">
-          SHOP COLLECTION
-        </h1>
-        <p className="text-gray-800 text-[15px] mb-12">
-          Streetwear made for neurodivergent minds.
-        </p>
+        <div className="flex flex-col items-center text-center">
+          <h1 className="font-heading text-5xl font-bold uppercase tracking-wide text-black mb-2">
+            SHOP COLLECTION
+          </h1>
+          <p className="text-gray-800 text-[15px] mb-12">
+            Streetwear made for neurodivergent minds.
+          </p>
+        </div>
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10 w-full">
           <div className="flex items-center gap-2">
@@ -103,9 +105,9 @@ export default function Shop() {
           <div className="flex items-center gap-3">
             <div className="relative">
               <Search className="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
-              <input 
-                type="text" 
-                placeholder="Search Item" 
+              <input
+                type="text"
+                placeholder="Search Item"
                 className="border border-gray-300 rounded-full pl-10 pr-4 py-2 text-sm w-full md:w-[280px] focus:outline-none focus:border-[#3b82f6]"
               />
             </div>
@@ -120,14 +122,14 @@ export default function Shop() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 gap-y-12 mb-20">
           {products.map((product) => (
-            <div key={product.id} className="flex flex-col">
-              <a href={`/products/${product.id}`} className="aspect-[4/5] w-full bg-white relative mb-4 flex items-center justify-center p-4 group-hover:opacity-90 transition-opacity">
+            <div key={product.id} className="group flex flex-col bg-white rounded-2xl p-3 transition-all duration-300 hover:shadow-2xl hover:shadow-gray-200/60 hover:-translate-y-2 border border-transparent hover:border-gray-100">
+              <a href={`/products/${product.id}`} className="aspect-[4/5] w-full bg-gray-50 rounded-xl relative mb-4 flex items-center justify-center p-6 overflow-hidden">
                 <Image
                   src={product.image}
                   alt={product.name}
                   width={300}
                   height={400}
-                  className="object-contain h-full w-full mix-blend-multiply"
+                  className="object-contain h-full w-full mix-blend-multiply group-hover:scale-110 transition-transform duration-500 ease-out"
                 />
               </a>
               <div className="flex flex-col gap-1.5 px-1">
@@ -141,12 +143,12 @@ export default function Shop() {
                   <span className="text-xl font-bold text-black">{product.price}</span>
                   <span className="text-sm text-gray-400 line-through">{product.originalPrice}</span>
                 </div>
-                <div className="flex gap-2 mt-3">
+                <div className="flex gap-2 mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-2 group-hover:translate-y-0">
                   <a href={`/products/${product.id}`} className="flex-1 py-1.5 text-xs font-semibold rounded-full border border-gray-300 hover:border-black transition-colors text-center">
-                    Quick View
+                    View Details
                   </a>
-                  <button className="flex-1 py-2 text-sm font-bold rounded-md bg-[#3b82f6] text-white hover:bg-blue-600 transition-colors shadow-sm">
-                    Buy Now
+                  <button className="flex-1 py-2 text-sm font-bold rounded-md bg-[#3b82f6] text-white hover:bg-blue-600 transition-all shadow-sm active:scale-95">
+                    Add to Cart
                   </button>
                 </div>
               </div>

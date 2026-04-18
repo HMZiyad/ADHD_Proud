@@ -46,7 +46,7 @@ export default function Blogs() {
       <Navbar bg="bg-[#808080]" />
       
       <div className="w-full px-6 md:px-16 py-16 pt-28">
-        <div className="mb-12">
+        <div className="mb-12 flex flex-col items-center text-center">
           <h1 className="font-heading text-5xl font-bold uppercase tracking-wide text-black mb-4">
             ADHD PROUD BLOG
           </h1>

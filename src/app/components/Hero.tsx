@@ -17,25 +17,31 @@ export default function Hero() {
         <div className="absolute inset-0 bg-black/20"></div>
       </div>
 
-      <div className="relative z-10 px-8 md:px-16 w-full">
-        <p className="text-white text-sm md:text-base font-medium mb-4 max-w-sm">
-          Defy the norm through urban streetwear and community driven design.
-        </p>
-        <h1 className="font-heading text-6xl md:text-8xl lg:text-9xl text-white leading-[0.85] tracking-tight mb-6">
-          WIRED DIFFERENT.<br />
+      <div className="relative z-10 px-6 md:px-16 w-full pt-16">
+        {/* Tagline Pill */}
+        <div className="inline-flex items-center gap-2 bg-white/5 backdrop-blur-md border border-white/10 px-4 py-1.5 rounded-full mb-8">
+          <div className="w-1.5 h-1.5 rounded-full bg-[#3b82f6] shadow-[0_0_8px_#3b82f6]" />
+          <p className="text-white/80 text-xs md:text-sm font-medium tracking-wide">
+            Designed for minds that move differently.
+          </p>
+        </div>
+
+        <h1 className="font-heading text-6xl md:text-7xl lg:text-8xl text-white font-black leading-[0.85] tracking-tight mb-8">
+          WIRED DIFFERENT.
           BUILT DIFFERENT.
         </h1>
-        <p className="text-white md:text-lg mb-8 max-w-md font-medium text-white/90">
-          We bring high-quality, comfortable fashion engineered for all body types,
-          focusing on sensory-friendly fabrics.
+
+        <p className="text-white/90 text-sm md:text-lg mb-10 max-w-xl font-medium leading-relaxed">
+          ADHD Proud is a streetwear brand celebrating neurodivergent creativity,
+          individuality, and community.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center gap-4">
-          <button className="w-full sm:w-auto px-8 py-3 rounded-full border-2 border-white text-white font-semibold hover:bg-white hover:text-black transition-colors">
-            Shop Collection
+        <div className="flex flex-wrap items-center gap-4">
+          <button className="px-8 py-3.5 rounded-full border border-white/30 bg-white/5 backdrop-blur-md text-white font-bold text-sm tracking-wide hover:bg-white/10 transition-all">
+            Explore Our Story
           </button>
-          <button className="w-full sm:w-auto px-8 py-3 rounded-full bg-[#3b82f6] border-2 border-[#3b82f6] text-white font-semibold hover:bg-blue-600 hover:border-blue-600 transition-colors">
-            Order Now
+          <button className="px-8 py-3.5 rounded-full bg-[#3b82f6] text-white font-bold text-sm tracking-wide hover:bg-blue-600 transition-all shadow-lg shadow-blue-500/20">
+            Shop Collection
           </button>
         </div>
       </div>

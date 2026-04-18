@@ -3,7 +3,7 @@
 @theme inline {
   --color-background: #ffffff;
   --color-foreground: #171717;
-  --font-sans: var(--font-inter);
+  --font-sans: var(--font-manrope);
   --font-heading: var(--font-bebas-neue);
   --color-primary: #3b82f6;
   --color-footer: #2d1a4a;

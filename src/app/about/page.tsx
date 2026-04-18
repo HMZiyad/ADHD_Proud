@@ -8,7 +8,7 @@ export default function About() {
       <Navbar bg="bg-[#808080]" />
       
       {/* Header Section */}
-      <div className="px-6 md:px-16 pt-28 pb-16">
+      <div className="px-6 md:px-16 pt-28 pb-16 flex flex-col items-center text-center">
         <h1 className="font-heading text-4xl md:text-5xl font-bold uppercase tracking-wide text-black mb-4">
           ABOUT ADHD PROUD
         </h1>

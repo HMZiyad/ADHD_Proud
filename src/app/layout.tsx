@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Inter, Bebas_Neue } from "next/font/google";
+import { Manrope, Bebas_Neue } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
 });
 
@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${bebasNeue.variable} antialiased`}
+      className={`${manrope.variable} ${bebasNeue.variable} antialiased`}
     >
       <body suppressHydrationWarning className="bg-white text-black font-sans leading-relaxed">{children}</body>
     </html>
