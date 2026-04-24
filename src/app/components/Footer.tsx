@@ -14,6 +14,7 @@ export default function Footer() {
                 src="/assets/logo.png"
                 alt="ADHD PROUD"
                 fill
+                sizes="(max-width: 768px) 128px, 128px"
                 className="object-contain object-left brightness-0 invert"
               />
             </div>
@@ -29,20 +30,20 @@ export default function Footer() {
             <div className="flex flex-col gap-4">
               <h4 className="font-heading text-xl uppercase tracking-widest text-white">QUICK LINKS</h4>
               <ul className="space-y-3 text-sm text-white/80 font-medium">
-                <li><a href="#" className="hover:text-blue-300 transition-colors">Home</a></li>
-                <li><a href="#" className="hover:text-blue-300 transition-colors">Shop</a></li>
-                <li><a href="#" className="hover:text-blue-300 transition-colors">About Us</a></li>
-                <li><a href="#" className="hover:text-blue-300 transition-colors">Contact Us</a></li>
+                <li><a href="/" className="hover:text-blue-300 transition-colors">Home</a></li>
+                <li><a href="/shop" className="hover:text-blue-300 transition-colors">Shop</a></li>
+                <li><a href="/about" className="hover:text-blue-300 transition-colors">About Us</a></li>
+                <li><a href="/contact" className="hover:text-blue-300 transition-colors">Contact Us</a></li>
               </ul>
             </div>
 
             <div className="flex flex-col gap-4">
               <h4 className="font-heading text-xl uppercase tracking-widest text-white">SHOP</h4>
               <ul className="space-y-3 text-sm text-white/80 font-medium">
-                <li><a href="#" className="hover:text-blue-300 transition-colors">All Products</a></li>
-                <li><a href="#" className="hover:text-blue-300 transition-colors">T-Shirts</a></li>
-                <li><a href="#" className="hover:text-blue-300 transition-colors">Outerwear</a></li>
-                <li><a href="#" className="hover:text-blue-300 transition-colors">Accessories</a></li>
+                <li><a href="/shop" className="hover:text-blue-300 transition-colors">All Products</a></li>
+                <li><a href="/shop?category=t-shirts" className="hover:text-blue-300 transition-colors">T-Shirts</a></li>
+                <li><a href="/shop?category=outerwear" className="hover:text-blue-300 transition-colors">Outerwear</a></li>
+                <li><a href="/shop?category=accessories" className="hover:text-blue-300 transition-colors">Accessories</a></li>
               </ul>
             </div>
 
@@ -80,7 +81,7 @@ export default function Footer() {
           <p>Made with love by the ADHD PROUD team.</p>
           <div className="flex gap-6">
             <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Conditions</a>
+            <a href="/terms" className="hover:text-white transition-colors">Terms of Conditions</a>
           </div>
         </div>
       </div>

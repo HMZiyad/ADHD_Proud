@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Eye, EyeOff, ChevronLeft } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { authService } from "@/services/auth.service";
 
 type Step = "email" | "otp" | "reset";
 
@@ -11,6 +12,74 @@ export default function ForgotPasswordPage() {
   const [step, setStep] = useState<Step>("email");
   const [showPass, setShowPass] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
+  
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState(["", "", "", "", ""]);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+    try {
+      await authService.forgotPassword(email);
+      setStep("otp");
+    } catch (err: any) {
+      setError(err.response?.data?.detail || "Failed to send reset email.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOtpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+    try {
+      const code = otp.join("");
+      await authService.verifyOtp(email, code);
+      setStep("reset");
+    } catch (err: any) {
+      setError(err.response?.data?.detail || "Invalid or expired OTP code.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResetSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+    setIsLoading(true);
+    setError("");
+    try {
+      await authService.resetPassword({ email, new_password: newPassword, confirm_password: confirmPassword });
+      window.location.href = "/login";
+    } catch (err: any) {
+      setError(err.response?.data?.detail || "Failed to reset password.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOtpChange = (index: number, value: string) => {
+    if (value.length > 1) value = value[value.length - 1];
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+    
+    // Auto focus next input
+    if (value && index < 4) {
+      const nextInput = document.getElementById(`otp-${index + 1}`);
+      nextInput?.focus();
+    }
+  };
 
   return (
     <main className="min-h-screen flex flex-col bg-gray-50">
@@ -28,6 +97,12 @@ export default function ForgotPasswordPage() {
             </div>
           </div>
 
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm">
+              {error}
+            </div>
+          )}
+
           {step === "email" && (
             <div className="animate-in fade-in duration-500">
               <div className="text-center mb-10">
@@ -35,21 +110,25 @@ export default function ForgotPasswordPage() {
                 <p className="text-gray-400 text-sm">Please enter your email to get verification code</p>
               </div>
 
-              <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setStep("otp"); }}>
+              <form className="space-y-6" onSubmit={handleEmailSubmit}>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">Email address</label>
                   <input 
                     type="email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="esteban_schiller@gmail.com" 
+                    required
                     className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500 transition-colors placeholder:text-gray-300"
                   />
                 </div>
 
                 <button 
                   type="submit" 
-                  className="w-full bg-[#3b82f6] text-white font-bold py-3.5 rounded-lg hover:bg-blue-600 transition-all shadow-lg shadow-blue-50"
+                  disabled={isLoading}
+                  className="w-full bg-[#3b82f6] text-white font-bold py-3.5 rounded-lg hover:bg-blue-600 transition-all shadow-lg shadow-blue-50 disabled:opacity-50"
                 >
-                  Sign in
+                  {isLoading ? "Sending..." : "Send Code"}
                 </button>
               </form>
             </div>
@@ -64,13 +143,15 @@ export default function ForgotPasswordPage() {
                 </p>
               </div>
 
-              <form className="space-y-10" onSubmit={(e) => { e.preventDefault(); setStep("reset"); }}>
+              <form className="space-y-10" onSubmit={handleOtpSubmit}>
                 <div className="flex justify-between gap-2 px-2">
-                  {[2, 8, 4, "", "", ""].map((val, i) => (
+                  {otp.map((val, i) => (
                     <input 
                       key={i}
+                      id={`otp-${i}`}
                       type="text" 
-                      defaultValue={val}
+                      value={val}
+                      onChange={(e) => handleOtpChange(i, e.target.value)}
                       maxLength={1}
                       className="w-12 h-12 md:w-14 md:h-14 text-center border border-gray-100 rounded-lg text-lg font-bold outline-none focus:border-blue-500 transition-colors bg-gray-50/50"
                     />
@@ -79,15 +160,16 @@ export default function ForgotPasswordPage() {
 
                 <button 
                   type="submit" 
-                  className="w-full bg-[#3b82f6] text-white font-bold py-3.5 rounded-lg hover:bg-blue-600 transition-all shadow-lg shadow-blue-50"
+                  disabled={isLoading}
+                  className="w-full bg-[#3b82f6] text-white font-bold py-3.5 rounded-lg hover:bg-blue-600 transition-all shadow-lg shadow-blue-50 disabled:opacity-50"
                 >
-                  Verify
+                  {isLoading ? "Verifying..." : "Verify"}
                 </button>
               </form>
 
               <div className="mt-8 text-center">
                 <p className="text-sm text-gray-500">
-                  You have not received the email? <button type="button" className="text-blue-500 font-medium hover:underline">Resend</button>
+                  You have not received the email? <button type="button" onClick={handleEmailSubmit} className="text-blue-500 font-medium hover:underline">Resend</button>
                 </p>
               </div>
             </div>
@@ -102,12 +184,15 @@ export default function ForgotPasswordPage() {
                 </p>
               </div>
 
-              <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); window.location.href = "/login"; }}>
+              <form className="space-y-6" onSubmit={handleResetSubmit}>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">New Password</label>
                   <div className="relative">
                     <input 
                       type={showPass ? "text" : "password"} 
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      required
                       placeholder="**********" 
                       className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500 transition-colors placeholder:text-gray-300 pr-12"
                     />
@@ -126,6 +211,9 @@ export default function ForgotPasswordPage() {
                   <div className="relative">
                     <input 
                       type={showConfirmPass ? "text" : "password"} 
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
                       placeholder="**********" 
                       className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500 transition-colors placeholder:text-gray-300 pr-12"
                     />
@@ -141,9 +229,10 @@ export default function ForgotPasswordPage() {
 
                 <button 
                   type="submit" 
-                  className="w-full bg-[#3b82f6] text-white font-bold py-3.5 rounded-lg hover:bg-blue-600 transition-all shadow-lg shadow-blue-50"
+                  disabled={isLoading}
+                  className="w-full bg-[#3b82f6] text-white font-bold py-3.5 rounded-lg hover:bg-blue-600 transition-all shadow-lg shadow-blue-50 disabled:opacity-50"
                 >
-                  Confirm
+                  {isLoading ? "Confirming..." : "Confirm"}
                 </button>
               </form>
             </div>

@@ -1,70 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Star, Plus, Minus, ThumbsUp, ThumbsDown, ArrowRight, ChevronRight } from "lucide-react";
+import { useParams } from "next/navigation";
+import { Star, Plus, Minus, ThumbsUp, ThumbsDown, ArrowRight, ChevronRight, Loader2 } from "lucide-react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-
-// Similar products data
-const similarProducts = [
-  {
-    id: 1,
-    name: "Powered By ADHD Unisex T-shirt",
-    price: "$280.00",
-    originalPrice: "$390.00",
-    reviews: 29,
-    image: "/assets/tshirt_blue.png",
-  },
-  {
-    id: 2,
-    name: "Hold On Let Me premium hat",
-    price: "$280.00",
-    originalPrice: "$390.00",
-    reviews: 29,
-    image: "/assets/tshirt_grey.png",
-  },
-  {
-    id: 3,
-    name: "Powered By ADHD Unisex T-shirt",
-    price: "$280.00",
-    originalPrice: "$390.00",
-    reviews: 29,
-    image: "/assets/tshirt_grey.png",
-  },
-  {
-    id: 4,
-    name: "Hold On Let Me premium hat",
-    price: "$280.00",
-    originalPrice: "$390.00",
-    reviews: 29,
-    image: "/assets/cap_white.png",
-  },
-];
-
-const reviews = [
-  {
-    id: 1,
-    user: "William Davis",
-    rating: 5,
-    text: "Absolutely love this T-shirt! The fabric is soft and premium, and it fits perfectly. I wear it everywhere, great quality for the price!",
-    avatar: "/assets/community.png", // Using existing as placeholder
-  },
-  {
-    id: 2,
-    user: "Lucas Kie",
-    rating: 5,
-    text: "Excellent craftsmanship! Fabric quality is really good. Perfect for daily wear. It looks even better in person.",
-    avatar: "/assets/hero.png", // Using existing as placeholder
-  },
-  {
-    id: 3,
-    user: "Lian Jual",
-    rating: 5,
-    text: "Great value for money. The shirt is warm and feels sturdy... definitely worth every cent! It fits well.",
-    avatar: "/assets/community.png", // Using existing as placeholder
-  },
-];
+import { shopService } from "@/services/shop.service";
+import { profileService } from "@/services/profile.service";
 
 const StarRating = ({ rating, count }: { rating: number, count?: number }) => (
   <div className="flex items-center gap-1">
@@ -79,10 +22,22 @@ const StarRating = ({ rating, count }: { rating: number, count?: number }) => (
 );
 
 export default function ProductPage() {
+  const params = useParams();
+  const slug = params.id as string;
+
+  const [product, setProduct] = useState<any>(null);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const [activeTab, setActiveTab] = useState<"details" | "reviews">("details");
   const [quantity, setQuantity] = useState(1);
-  const [selectedSize, setSelectedSize] = useState("XS");
-  const [selectedColor, setSelectedColor] = useState("navy");
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
+  
+  const [addingToCart, setAddingToCart] = useState(false);
+  const [submittingReview, setSubmittingReview] = useState(false);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewText, setReviewText] = useState("");
 
   const sizes = ["XS", "S", "M", "L", "XL"];
   const colors = [
@@ -92,6 +47,95 @@ export default function ProductPage() {
     { name: "purple", class: "bg-[#6b21a8]" },
   ];
 
+  useEffect(() => {
+    if (slug) {
+      fetchProductData();
+    }
+  }, [slug]);
+
+  const fetchProductData = async () => {
+    try {
+      setLoading(true);
+      const data = await shopService.getProductBySlug(slug);
+      setProduct(data);
+      if (data) {
+        // Fetch reviews
+        const reviewData = await shopService.getProductReviews(slug);
+        setReviews(reviewData);
+      }
+    } catch (error) {
+      console.error("Failed to fetch product", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddToCart = async () => {
+    if (!product) return;
+    try {
+      setAddingToCart(true);
+      await profileService.addToCart({
+        product_id: product.id,
+        size: selectedSize || sizes[0],
+        color: selectedColor || colors[0].name,
+        quantity: quantity
+      });
+      alert("Added to cart!");
+    } catch (error) {
+      console.error("Failed to add to cart", error);
+      alert("Please login to add to cart.");
+    } finally {
+      setAddingToCart(false);
+    }
+  };
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reviewText.trim()) return;
+    try {
+      setSubmittingReview(true);
+      await shopService.submitProductReview(slug, {
+        rating: reviewRating,
+        comment: reviewText
+      });
+      setReviewText("");
+      // Refresh reviews
+      const reviewData = await shopService.getProductReviews(slug);
+      setReviews(reviewData);
+      alert("Review submitted successfully");
+    } catch (error) {
+      console.error("Failed to submit review", error);
+      alert("Failed to submit review. Are you logged in?");
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <main className="min-h-screen flex flex-col bg-white">
+        <Navbar bg="bg-[#808080]" />
+        <div className="flex-1 flex items-center justify-center pt-28">
+          <Loader2 className="w-10 h-10 text-blue-500 animate-spin" />
+        </div>
+        <Footer />
+      </main>
+    );
+  }
+
+  if (!product) {
+    return (
+      <main className="min-h-screen flex flex-col bg-white">
+        <Navbar bg="bg-[#808080]" />
+        <div className="flex-1 flex flex-col items-center justify-center pt-28">
+          <h2 className="text-2xl font-bold mb-4">Product Not Found</h2>
+          <a href="/shop" className="text-blue-500 hover:underline">Return to Shop</a>
+        </div>
+        <Footer />
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-white">
       <Navbar bg="bg-[#808080]" />
@@ -99,11 +143,9 @@ export default function ProductPage() {
       <div className="w-full px-6 md:px-16 py-8 pt-28">
         {/* Breadcrumbs */}
         <nav className="flex text-xs text-gray-500 mb-8 items-center gap-2">
-          <span>Categories</span>
+          <span>Shop</span>
           <ChevronRight size={12} />
-          <span>Men</span>
-          <ChevronRight size={12} />
-          <span className="text-gray-900">T-Shirt</span>
+          <span className="text-gray-900">{product.name}</span>
         </nav>
 
         {/* Product Grid */}
@@ -112,21 +154,19 @@ export default function ProductPage() {
           <div className="md:col-span-6">
             <div className="bg-[#f8f9fb] rounded-lg aspect-square relative mb-6 overflow-hidden flex items-center justify-center p-12">
               <Image 
-                src="/assets/tshirt_blue.png" 
-                alt="Product Image" 
-                width={500} 
-                height={500} 
+                src={product.primary_image || "/assets/placeholder.png"} 
+                alt={product.name} 
+                fill
                 className="object-contain"
               />
             </div>
             <div className="grid grid-cols-3 gap-4">
-              {[1, 2, 3].map((i) => (
+              {[product.primary_image, product.primary_image, product.primary_image].map((img, i) => (
                 <div key={i} className="bg-[#f8f9fb] rounded-lg aspect-square relative cursor-pointer hover:border-gray-300 border-2 border-transparent transition-all flex items-center justify-center p-4">
                   <Image 
-                    src="/assets/tshirt_blue.png" 
+                    src={img || "/assets/placeholder.png"} 
                     alt={`Thumbnail ${i}`} 
-                    width={150} 
-                    height={150} 
+                    fill 
                     className="object-contain"
                   />
                 </div>
@@ -140,21 +180,21 @@ export default function ProductPage() {
               <span className="text-xs text-gray-400 font-medium">In Stock</span>
             </div>
             <h1 className="text-4xl font-heading font-black tracking-tight text-gray-900 mb-2 uppercase">
-              URBAN CLASSIC PREMIUM COTTON T-SHIRT
+              {product.name}
             </h1>
-            <p className="text-sm text-gray-500 mb-6 italic">Drop Shoulder T-shirt</p>
+            <p className="text-sm text-gray-500 mb-6 italic">{product.category?.name || "Apparel"}</p>
             
             <p className="text-gray-600 text-[15px] mb-8 leading-relaxed max-w-xl">
-              A stylish Drop Shoulder T-shirt designed to elevate your look with a modern fit and cool, confident feel.
+              {product.description || "A stylish piece designed to elevate your look with a modern fit and cool, confident feel."}
             </p>
 
             <div className="flex items-center gap-4 mb-8">
-              <span className="text-4xl font-bold font-heading text-gray-900">$280.00</span>
-              <span className="text-lg text-gray-400 line-through font-heading">$390.00</span>
+              <span className="text-4xl font-bold font-heading text-gray-900">${product.price}</span>
+              {product.old_price && <span className="text-lg text-gray-400 line-through font-heading">${product.old_price}</span>}
             </div>
 
             <div className="mb-10">
-              <StarRating rating={5.0} count={245} />
+              <StarRating rating={product.average_rating || 5.0} count={product.review_count || 0} />
             </div>
 
             {/* Size Selection */}
@@ -212,8 +252,12 @@ export default function ProductPage() {
                 </div>
               </div>
 
-              <button className="bg-blue-600 text-white font-bold py-4 px-8 rounded-md hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 w-full md:w-fit min-w-[280px]">
-                Add to cart
+              <button 
+                onClick={handleAddToCart}
+                disabled={addingToCart}
+                className="bg-blue-600 text-white font-bold py-4 px-8 rounded-md hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 w-full md:w-fit min-w-[280px] disabled:opacity-50"
+              >
+                {addingToCart ? "Adding..." : "Add to cart"}
               </button>
 
               <p className="text-gray-900 italic font-medium">Limited stock available — grab yours now</p>
@@ -249,36 +293,7 @@ export default function ProductPage() {
             <div className="w-full">
               <h2 className="text-4xl font-heading font-black mb-8 text-gray-900 uppercase">Description</h2>
               <div className="text-gray-600 space-y-6 text-[15px] leading-relaxed mb-12">
-                <p>
-                  Step into your bold side with the Urban Classic Premium Cotton T-Shirt — designed for those who think differently and express it fearlessly. This piece blends everyday comfort with standout design, making it perfect for creative minds and streetwear lovers.
-                </p>
-                <p>
-                  Whether you&apos;re out with friends or deep in your own creative zone, this t-shirt keeps you comfortable while letting your style speak loud and clear.
-                </p>
-              </div>
-
-              <div className="mb-12">
-                <h3 className="font-bold text-gray-900 mb-6">Why You&apos;ll Love It</h3>
-                <ul className="list-disc list-inside text-gray-600 space-y-3 text-[15px]">
-                  <li>Soft, breathable premium cotton for all-day comfort</li>
-                  <li>Relaxed fit for a modern streetwear look</li>
-                  <li>Eye-catching graphic design that stands out</li>
-                  <li>Durable print that won&apos;t fade easily</li>
-                  <li>Perfect for casual wear, hangouts, or creative sessions</li>
-                </ul>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-gray-900 mb-6">Product Details</h3>
-                <ul className="text-gray-600 space-y-3 text-[15px]">
-                  <li><span className="font-medium text-gray-900">Fabric:</span> 100% Premium Cotton</li>
-                  <li><span className="font-medium text-gray-900">Fit:</span> Regular / Relaxed Fit</li>
-                  <li><span className="font-medium text-gray-900">Neck:</span> Round Neck</li>
-                  <li><span className="font-medium text-gray-900">Sleeve:</span> Short Sleeve</li>
-                  <li><span className="font-medium text-gray-900">Print Type:</span> High-quality graphic print</li>
-                  <li><span className="font-medium text-gray-900">Gender:</span> Unisex</li>
-                  <li><span className="font-medium text-gray-900">Season:</span> All-season wear</li>
-                </ul>
+                <p>{product.description}</p>
               </div>
             </div>
           ) : (
@@ -294,83 +309,58 @@ export default function ProductPage() {
                 </div>
               </div>
 
+              {/* Add Review Form */}
+              <form onSubmit={handleSubmitReview} className="mb-12 bg-gray-50 p-6 rounded-xl border border-gray-100">
+                <h3 className="font-bold mb-4">Write a Review</h3>
+                <div className="flex gap-2 mb-4">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button type="button" key={star} onClick={() => setReviewRating(star)}>
+                      <Star size={24} fill={star <= reviewRating ? "#fbbf24" : "none"} color={star <= reviewRating ? "#fbbf24" : "#9ca3af"} />
+                    </button>
+                  ))}
+                </div>
+                <textarea 
+                  value={reviewText}
+                  onChange={(e) => setReviewText(e.target.value)}
+                  className="w-full border border-gray-200 p-3 rounded-lg outline-none focus:border-blue-500 mb-4" 
+                  rows={3} 
+                  placeholder="Share your thoughts..."
+                  required
+                />
+                <button 
+                  type="submit" 
+                  disabled={submittingReview}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-md font-bold disabled:opacity-50"
+                >
+                  {submittingReview ? "Submitting..." : "Submit Review"}
+                </button>
+              </form>
+
               <div className="space-y-10">
-                {reviews.map((review) => (
+                {reviews.length > 0 ? reviews.map((review: any) => (
                   <div key={review.id} className="flex gap-6 border-b border-gray-100 pb-10 last:border-0">
-                    <div className="w-14 h-14 rounded-full overflow-hidden shrink-0 relative">
-                      <Image 
-                        src={review.avatar} 
-                        alt={review.user} 
-                        fill 
-                        className="object-cover" 
-                      />
+                    <div className="w-14 h-14 rounded-full overflow-hidden shrink-0 relative bg-gray-200 flex items-center justify-center text-gray-500 font-bold text-xl">
+                      {review.user?.full_name?.charAt(0) || "U"}
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-bold text-gray-900 mb-1">{review.user}</h4>
+                      <h4 className="font-bold text-gray-900 mb-1">{review.user?.full_name || "Anonymous User"}</h4>
                       <div className="mb-4">
                         <StarRating rating={review.rating} />
                       </div>
                       <p className="text-gray-500 text-[15px] leading-relaxed mb-4 max-w-2xl">
-                        {review.text}
+                        {review.comment}
                       </p>
-                      <div className="flex items-center gap-6">
-                        <button className="text-xs font-bold text-gray-400 hover:text-gray-600 transition-colors uppercase tracking-widest">Reply</button>
-                        <div className="flex items-center gap-4 text-gray-400">
-                          <button className="hover:text-blue-600 transition-colors"><ThumbsUp size={16} /></button>
-                          <button className="hover:text-red-600 transition-colors"><ThumbsDown size={16} /></button>
-                        </div>
+                      <div className="text-xs text-gray-400">
+                        {new Date(review.created_at).toLocaleDateString()}
                       </div>
                     </div>
                   </div>
-                ))}
+                )) : (
+                  <p className="text-gray-500">No reviews yet. Be the first to review!</p>
+                )}
               </div>
             </div>
           )}
-        </div>
-
-        {/* Similar Products */}
-        <div className="mb-32">
-          <h2 className="text-5xl font-heading font-black text-gray-900 uppercase text-center mb-16">Similar Products</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {similarProducts.map((product) => (
-              <div key={product.id} className="flex flex-col group">
-                <a href={`/products/${product.id}`} className="relative aspect-square w-full bg-[#f8f9fb] rounded-lg overflow-hidden mb-6 flex items-center justify-center p-10 transition-all group-hover:bg-[#f1f3f7]">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    width={220}
-                    height={220}
-                    className="object-contain group-hover:scale-105 transition-transform duration-300"
-                  />
-                </a>
-                <div className="flex flex-col gap-2">
-                  <a href={`/products/${product.id}`} className="hover:text-blue-600 transition-colors">
-                    <h3 className="font-bold text-gray-900 line-clamp-1 text-[15px]">
-                      {product.name}
-                    </h3>
-                  </a>
-                  <div className="flex text-orange-400 mb-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} size={14} fill="currentColor" />
-                    ))}
-                    <span className="text-gray-400 text-xs ml-2 font-medium">(29 reviews)</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-lg font-bold text-gray-900">{product.price}</span>
-                    <span className="text-sm text-gray-300 line-through font-medium">{product.originalPrice}</span>
-                  </div>
-                  <div className="flex gap-3 mt-4 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
-                    <button className="flex-1 py-2 text-xs font-bold rounded border border-gray-200 hover:border-gray-900 transition-all uppercase tracking-widest">
-                      Add to Cart
-                    </button>
-                    <button className="flex-1 py-2 text-xs font-bold rounded bg-blue-600 text-white hover:bg-blue-700 transition-all uppercase tracking-widest shadow-md shadow-blue-50">
-                      Buy Now
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
 

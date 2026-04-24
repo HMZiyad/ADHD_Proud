@@ -4,18 +4,53 @@ import { ShoppingCart, Menu, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
+import { authService } from "@/services/auth.service";
+import { profileService } from "@/services/profile.service";
+
 export default function Navbar({ bg = "transparent", isLoggedIn: propIsLoggedIn }: { bg?: string; isLoggedIn?: boolean }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(propIsLoggedIn || false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(propIsLoggedIn !== undefined ? propIsLoggedIn : null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [profile, setProfile] = useState<any>(null);
+  const [cartCount, setCartCount] = useState<number>(0);
+
+  const fetchCartCount = async () => {
+    try {
+      const data = await profileService.getCart();
+      const count = data?.items?.reduce((sum: number, item: any) => sum + item.quantity, 0) || 0;
+      setCartCount(count);
+    } catch (error) {
+      console.error("Failed to fetch cart count", error);
+    }
+  };
 
   useEffect(() => {
-    if (propIsLoggedIn !== undefined) {
-      setIsLoggedIn(propIsLoggedIn);
-      return;
-    }
-    const status = localStorage.getItem("isLoggedIn") === "true";
-    setIsLoggedIn(status);
-  }, [propIsLoggedIn]);
+    const initAuth = async () => {
+      const isAuth = authService.isAuthenticated();
+      setIsLoggedIn(isAuth);
+      if (isAuth) {
+        try {
+          const profileData = await profileService.getProfile();
+          setProfile(profileData);
+          await fetchCartCount();
+        } catch (error) {
+          console.error("Failed to fetch profile for navbar", error);
+        }
+      }
+    };
+    initAuth();
+
+    const handleCartUpdate = () => {
+      if (authService.isAuthenticated()) fetchCartCount();
+    };
+
+    window.addEventListener('cartUpdated', handleCartUpdate);
+    return () => window.removeEventListener('cartUpdated', handleCartUpdate);
+  }, []);
+
+  const handleLogout = () => {
+    authService.logout();
+    setIsLoggedIn(false);
+  };
 
   return (
     <nav className="fixed top-0 left-0 w-full z-[100] bg-black/40 backdrop-blur-xl border-b border-white/5">
@@ -41,15 +76,34 @@ export default function Navbar({ bg = "transparent", isLoggedIn: propIsLoggedIn 
         </div>
 
         {/* Desktop actions */}
-        <div className="hidden md:flex items-center gap-6 shrink-0">
+        <div className="hidden md:flex items-center gap-6 shrink-0 min-w-[140px] justify-end">
           <a href="/cart" className="relative cursor-pointer hover:text-blue-300 transition-colors">
             <ShoppingCart className="w-6 h-6" />
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
+                {cartCount > 99 ? '99+' : cartCount}
+              </span>
+            )}
           </a>
 
-          {isLoggedIn ? (
-            <a href="/profile" className="w-10 h-10 rounded-full overflow-hidden border-2 border-white hover:border-blue-300 transition-all shadow-sm">
-              <Image src="/assets/hero.png" alt="Profile" width={40} height={40} className="object-cover" />
-            </a>
+          {isLoggedIn === null ? (
+            <div className="w-[140px] h-10 animate-pulse bg-white/10 rounded-full" />
+          ) : isLoggedIn ? (
+            <div className="flex items-center gap-4">
+              <a href="/profile" className="w-10 h-10 rounded-full overflow-hidden border-2 border-white hover:border-blue-300 transition-all shadow-sm flex items-center justify-center bg-gray-200">
+                {profile?.avatar ? (
+                  <Image src={profile.avatar} alt="Profile" width={40} height={40} className="object-cover w-full h-full" />
+                ) : (
+                  <span className="text-sm font-bold text-gray-500">{profile?.full_name?.charAt(0) || "U"}</span>
+                )}
+              </a>
+              <button 
+                onClick={handleLogout}
+                className="text-sm font-semibold border border-white/40 px-5 py-2 rounded-full hover:bg-white/10 transition-all cursor-pointer"
+              >
+                Logout
+              </button>
+            </div>
           ) : (
             <div className="flex items-center gap-4">
               <a href="/login" className="text-sm font-semibold border border-white/40 px-6 py-2.5 rounded-full hover:bg-white/10 transition-all">Log in</a>
@@ -62,8 +116,13 @@ export default function Navbar({ bg = "transparent", isLoggedIn: propIsLoggedIn 
 
         {/* Mobile: cart + hamburger */}
         <div className="flex md:hidden items-center gap-4">
-          <a href="/cart" className="cursor-pointer hover:text-blue-300 transition-colors text-white">
+          <a href="/cart" className="relative cursor-pointer hover:text-blue-300 transition-colors text-white">
             <ShoppingCart className="w-6 h-6" />
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
+                {cartCount > 99 ? '99+' : cartCount}
+              </span>
+            )}
           </a>
           <button
             onClick={() => setMenuOpen(!menuOpen)}
@@ -83,11 +142,25 @@ export default function Navbar({ bg = "transparent", isLoggedIn: propIsLoggedIn 
           <a href="/blogs" onClick={() => setMenuOpen(false)} className="hover:text-blue-300 transition-colors">Blogs</a>
           <a href="/about" onClick={() => setMenuOpen(false)} className="hover:text-blue-300 transition-colors">About Us</a>
           <a href="/contact" onClick={() => setMenuOpen(false)} className="hover:text-blue-300 transition-colors">Contact Us</a>
-          <div className="flex items-center gap-4 pt-2 border-t border-white/10">
-            {isLoggedIn ? (
-              <a href="/profile" className="w-10 h-10 rounded-full overflow-hidden border-2 border-white">
-                <Image src="/assets/hero.png" alt="Profile" width={40} height={40} className="object-cover" />
-              </a>
+          <div className="flex items-center gap-4 pt-2 border-t border-white/10 min-h-[50px]">
+            {isLoggedIn === null ? (
+              <div className="w-full h-10 animate-pulse bg-white/10 rounded-full" />
+            ) : isLoggedIn ? (
+              <div className="flex items-center gap-4">
+                <a href="/profile" className="w-10 h-10 rounded-full overflow-hidden border-2 border-white flex items-center justify-center bg-gray-200">
+                  {profile?.avatar ? (
+                    <Image src={profile.avatar} alt="Profile" width={40} height={40} className="object-cover w-full h-full" />
+                  ) : (
+                    <span className="text-sm font-bold text-gray-500">{profile?.full_name?.charAt(0) || "U"}</span>
+                  )}
+                </a>
+                <button 
+                  onClick={handleLogout}
+                  className="text-sm font-semibold border border-white/40 px-5 py-2 rounded-full hover:bg-white/10 transition-all"
+                >
+                  Logout
+                </button>
+              </div>
             ) : (
               <>
                 <a href="/login" className="text-sm font-semibold border border-white/40 px-6 py-2.5 rounded-full hover:bg-white/10 transition-all">Log in</a>

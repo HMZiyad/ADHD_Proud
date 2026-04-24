@@ -1,7 +1,12 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import { User, Calendar, Share2, ArrowLeft, ArrowRight, ChevronLeft } from "lucide-react";
+import { User, Calendar, Share2, ArrowLeft, ArrowRight, ChevronLeft, Loader2 } from "lucide-react";
+import { blogService } from "@/services/blog.service";
 
 const Facebook = (props: any) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={props.strokeWidth || 2} strokeLinecap="round" strokeLinejoin="round" className={props.className}>
@@ -24,15 +29,66 @@ const Linkedin = (props: any) => (
 );
 
 export default function BlogPost() {
+  const params = useParams();
+  const slug = params.id as string;
+  
+  const [post, setPost] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (slug) {
+      fetchPost();
+    }
+  }, [slug]);
+
+  const fetchPost = async () => {
+    try {
+      setLoading(true);
+      const data = await blogService.getPostBySlug(slug);
+      setPost(data);
+    } catch (error) {
+      console.error("Failed to fetch blog post", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <main className="min-h-screen flex flex-col bg-gray-50">
+        <Navbar bg="bg-[#808080]" />
+        <div className="flex-1 flex items-center justify-center pt-28">
+          <Loader2 className="w-10 h-10 text-blue-500 animate-spin" />
+        </div>
+        <Footer />
+      </main>
+    );
+  }
+
+  if (!post) {
+    return (
+      <main className="min-h-screen flex flex-col bg-gray-50">
+        <Navbar bg="bg-[#808080]" />
+        <div className="flex-1 flex flex-col items-center justify-center pt-28 gap-4">
+          <h1 className="text-3xl font-bold">Blog Post Not Found</h1>
+          <a href="/blogs" className="text-blue-500 hover:underline flex items-center gap-2">
+            <ArrowLeft className="w-4 h-4" /> Back to Blogs
+          </a>
+        </div>
+        <Footer />
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen flex flex-col bg-gray-50">
       <Navbar bg="bg-[#808080]" />
       
       {/* Hero Banner */}
-      <div className="relative w-full h-[450px]">
+      <div className="relative w-full h-[450px] bg-gray-200">
         <Image 
-          src="/assets/blogs/hero.png" 
-          alt="Blog Hero" 
+          src={post.image || "/assets/blogs/hero.png"} 
+          alt={post.title} 
           fill 
           className="object-cover" 
           priority
@@ -48,22 +104,24 @@ export default function BlogPost() {
       <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 relative -mt-32 mb-24">
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 md:p-12 lg:p-16">
           
-          <span className="inline-block bg-[#d90b8b] text-white px-3 py-1 rounded-sm text-[11px] font-medium tracking-wide mb-8">
-            ADHD Awareness
-          </span>
+          {post.category && (
+            <span className="inline-block bg-[#d90b8b] text-white px-3 py-1 rounded-sm text-[11px] font-medium tracking-wide mb-8 uppercase">
+              {post.category.name}
+            </span>
+          )}
 
           <h1 className="font-heading text-4xl md:text-5xl font-bold uppercase tracking-wide text-black mb-8 leading-tight">
-            LIVING WITH ADHD IN A NEUROTYPICAL WORLD
+            {post.title}
           </h1>
 
           <div className="flex items-center gap-6 text-gray-500 text-sm mb-6 pb-6 border-b border-gray-100">
             <div className="flex items-center gap-2">
               <User className="w-4 h-4 text-blue-500" strokeWidth={1.5} /> 
-              <span>Sarena</span>
+              <span>{post.author_name || "Admin"}</span>
             </div>
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4 text-blue-500" strokeWidth={1.5} />
-              <span>April 1, 2026</span>
+              <span>{new Date(post.published_date || post.created_at).toLocaleDateString()}</span>
             </div>
           </div>
 
@@ -77,45 +135,22 @@ export default function BlogPost() {
           </div>
 
           <article className="prose prose-lg max-w-none text-gray-800">
-            <p className="mb-6 font-light leading-relaxed text-[15px]">
-              Living with ADHD in a neurotypical world requires resilience, creativity, and self-compassion. 
-              Every day presents unique challenges, from managing time and tasks to navigating social 
-              situations that weren&apos;t designed with neurodivergent minds in mind.
-            </p>
-            <p className="mb-14 font-light leading-relaxed text-[15px]">
-              But here&apos;s the thing: having ADHD isn&apos;t a deficit, it&apos;s a different way of experiencing and 
-              interacting with the world. While neurotypical structures can feel restrictive, they&apos;ve also pushed 
-              many of us to develop innovative coping strategies and unique perspectives.
-            </p>
-
-            <h2 className="text-[26px] font-normal text-blue-500 mb-6 tracking-wide">
-              Understanding the Challenges
-            </h2>
-            
-            <p className="mb-6 font-light leading-relaxed text-[15px]">
-              The modern workplace, educational systems, and even social norms were largely built for 
-              neurotypical brains. This can make simple tasks feel overwhelming:
-            </p>
-
-            <ul className="mb-14 space-y-4 font-light leading-relaxed text-[15px]">
-              <li><span className="text-blue-500 font-normal">Time blindness:</span> makes punctuality and deadlines feel like moving targets</li>
-              <li><span className="text-blue-500 font-normal">Executive dysfunction:</span> can turn a simple to-do list into an insurmountable mountain</li>
-              <li><span className="text-blue-500 font-normal">Sensory sensitivities:</span> mean that open offices and fluorescent lights aren&apos;t just uncomfortable - they&apos;re genuinely debilitating</li>
-            </ul>
-
-            <p className="mb-8 font-light leading-relaxed text-[15px]">
-              Remember: you&apos;re not broken, and you don&apos;t need to be fixed. You need understanding, support, 
-              and the freedom to work with your brain, not against it.
-            </p>
+            {/* 
+              If the backend sends raw HTML in content, you would use dangerouslySetInnerHTML.
+              Since we are unsure, we will just render it as text, or if it's rich text we can safely inject it.
+            */}
+            {post.content ? (
+              <div dangerouslySetInnerHTML={{ __html: post.content }} className="font-light leading-relaxed text-[15px]" />
+            ) : (
+              <p className="mb-6 font-light leading-relaxed text-[15px]">
+                {post.excerpt || post.description || "No content available for this post."}
+              </p>
+            )}
           </article>
 
           <div className="flex items-center justify-between mt-20 pt-8 border-t border-gray-100">
-            <a href="#" className="flex items-center gap-2 text-gray-500 hover:text-black transition-colors text-sm font-medium">
-              <ArrowLeft className="w-4 h-4" strokeWidth={1.5} /> Previous Blog
-            </a>
-            
-            <a href="#" className="flex items-center gap-2 text-gray-500 hover:text-black transition-colors text-sm font-medium">
-              Previous Blog <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
+            <a href="/blogs" className="flex items-center gap-2 text-gray-500 hover:text-black transition-colors text-sm font-medium">
+              <ArrowLeft className="w-4 h-4" strokeWidth={1.5} /> Back to Blogs
             </a>
           </div>
         </div>

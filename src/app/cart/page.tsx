@@ -1,61 +1,114 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Plus, Minus, Trash2, Heart, ChevronRight, ArrowLeft } from "lucide-react";
+import { Plus, Minus, Trash2, Heart, ChevronRight, ArrowLeft, Loader2 } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { profileService } from "@/services/profile.service";
+import { orderService } from "@/services/order.service";
 
 type Step = "cart" | "checkout" | "confirmed";
 
-const cartItems = [
-  {
-    id: 1,
-    name: "The Architecht Premium T-Shirt",
-    color: "Grey",
-    size: "L",
-    price: 129.29,
-    image: "/assets/tshirt_grey.png",
-  },
-  {
-    id: 2,
-    name: "The Architecht Premium T-Shirt",
-    color: "Blue",
-    size: "L",
-    price: 129.29,
-    image: "/assets/tshirt_blue.png",
-  },
-  {
-    id: 3,
-    name: "The Architecht Premium T-Shirt",
-    color: "Grey",
-    size: "L",
-    price: 129.29,
-    image: "/assets/cap_white.png", // Using cap as placeholder for 3rd item in screenshot
-  },
-];
-
 export default function CartPage() {
   const [step, setStep] = useState<Step>("cart");
-  const [quantities, setQuantities] = useState<{ [key: number]: number }>({
-    1: 1,
-    2: 1,
-    3: 1,
-  });
+  const [cartData, setCartData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState<number | null>(null);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
-  const updateQuantity = (id: number, delta: number) => {
-    setQuantities((prev) => ({
-      ...prev,
-      [id]: Math.max(1, prev[id] + delta),
-    }));
+  // Form states
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zipCode, setZipCode] = useState("");
+  const [country, setCountry] = useState("");
+  const [orderNotes, setOrderNotes] = useState("");
+
+  useEffect(() => {
+    fetchCart();
+  }, []);
+
+  const fetchCart = async () => {
+    try {
+      setLoading(true);
+      const data = await profileService.getCart();
+      setCartData(data);
+    } catch (error) {
+      console.error("Failed to fetch cart", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const subtotal = cartItems.reduce((acc, item) => acc + item.price * quantities[item.id], 0);
-  const shipping = 5.00;
-  const tax = 10.99;
-  const total = subtotal + shipping + tax;
+  const updateQuantity = async (id: number, currentQuantity: number, delta: number) => {
+    const newQuantity = Math.max(1, currentQuantity + delta);
+    if (newQuantity === currentQuantity) return;
+    
+    try {
+      setUpdatingId(id);
+      const data = await profileService.updateCartItem(id, newQuantity);
+      // Data returns updated item, we should refresh cart to get new totals
+      await fetchCart();
+    } catch (error) {
+      console.error("Failed to update quantity", error);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
 
-  const ProgressBar = () => (
+  const removeItem = async (id: number) => {
+    try {
+      setUpdatingId(id);
+      await profileService.removeCartItem(id);
+      await fetchCart();
+    } catch (error) {
+      console.error("Failed to remove item", error);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const handleCheckout = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    try {
+      setCheckoutLoading(true);
+      const data = await orderService.createCheckoutSession({
+        first_name: firstName,
+        last_name: lastName,
+        email,
+        phone,
+        address,
+        city,
+        state,
+        zip_code: zipCode,
+        country,
+        order_notes: orderNotes
+      });
+      // Redirect to Stripe Checkout
+      if (data.session_url) {
+        window.location.href = data.session_url;
+      }
+    } catch (error: any) {
+      console.error("Checkout failed", error);
+      let errorMsg = "Checkout failed. Please ensure all fields are filled correctly.";
+      if (error.response?.data) {
+        const data = error.response.data;
+        if (typeof data === 'object') {
+          errorMsg = Object.values(data).map(v => Array.isArray(v) ? v[0] : v).join(" ");
+        }
+      }
+      alert(errorMsg);
+    } finally {
+      setCheckoutLoading(false);
+    }
+  };
+
+  const renderProgressBar = () => (
     <div className="flex flex-col items-center mb-16 px-4">
       <div className="flex justify-between w-full max-w-4xl mb-4 relative">
         <div className="flex flex-col items-center z-10">
@@ -80,96 +133,86 @@ export default function CartPage() {
     </div>
   );
 
-  const CartStep = () => (
-    <div className="flex flex-col lg:flex-row gap-12">
-      {/* Items List */}
-      <div className="flex-1 space-y-6">
-        {cartItems.map((item) => (
-          <div key={item.id} className="bg-white border border-gray-100 rounded-xl p-6 flex gap-6 shadow-sm hover:shadow-md transition-shadow relative">
-            <div className="w-40 h-40 bg-[#f8f9fb] rounded-lg overflow-hidden flex items-center justify-center p-4">
-              <Image src={item.image} alt={item.name} width={120} height={120} className="object-contain" />
-            </div>
-            <div className="flex-1 flex flex-col justify-between py-2">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">{item.name}</h3>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <span>Color:</span>
-                      <div className="w-4 h-4 rounded-sm bg-gray-400"></div>
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      <span>Size: </span>
-                      <span className="font-bold text-gray-900">{item.size}</span>
+  const renderCartStep = () => {
+    if (loading) return <div className="flex justify-center py-20"><Loader2 className="w-10 h-10 animate-spin text-blue-500" /></div>;
+    if (!cartData || cartData.items.length === 0) return <div className="text-center py-20 text-xl font-bold">Your cart is empty.</div>;
+
+    return (
+      <div className="flex flex-col lg:flex-row gap-12">
+        {/* Items List */}
+        <div className="flex-1 space-y-6">
+          {cartData.items.map((item: any) => (
+            <div key={item.id} className={`bg-white border border-gray-100 rounded-xl p-6 flex gap-6 shadow-sm hover:shadow-md transition-shadow relative ${updatingId === item.id ? 'opacity-50' : ''}`}>
+              <div className="w-40 h-40 bg-[#f8f9fb] rounded-lg overflow-hidden flex items-center justify-center p-4">
+                <Image src={item.product?.primary_image || "/assets/placeholder.png"} alt={item.product?.name || "Product"} width={120} height={120} className="object-contain" />
+              </div>
+              <div className="flex-1 flex flex-col justify-between py-2">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-4">{item.product?.name}</h3>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <span>Color:</span>
+                        <span className="font-bold text-gray-900 capitalize">{item.color}</span>
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        <span>Size: </span>
+                        <span className="font-bold text-gray-900">{item.size}</span>
+                      </div>
                     </div>
                   </div>
+                  <div className="flex gap-4">
+                    <button onClick={() => removeItem(item.id)} disabled={updatingId === item.id} className="text-gray-300 hover:text-red-500 transition-colors disabled:opacity-50"><Trash2 size={20} /></button>
+                  </div>
                 </div>
-                <div className="flex gap-4">
-                  <button className="text-gray-300 hover:text-red-400 transition-colors"><Heart size={20} /></button>
-                  <button className="text-gray-300 hover:text-red-500 transition-colors"><Trash2 size={20} /></button>
+                
+                <div className="flex justify-between items-end">
+                  <span className="text-2xl font-bold text-blue-500">${item.item_total}</span>
+                  <div className="flex items-center border border-gray-100 rounded-lg overflow-hidden">
+                    <button disabled={updatingId === item.id} onClick={() => updateQuantity(item.id, item.quantity, -1)} className="p-2 hover:bg-gray-50 text-gray-400 border-r border-gray-100 disabled:opacity-50"><Minus size={16} /></button>
+                    <span className="w-10 text-center font-bold text-gray-900">{item.quantity}</span>
+                    <button disabled={updatingId === item.id} onClick={() => updateQuantity(item.id, item.quantity, 1)} className="p-2 hover:bg-gray-50 text-gray-400 border-l border-gray-100 disabled:opacity-50"><Plus size={16} /></button>
+                  </div>
                 </div>
               </div>
-              
-              <div className="flex justify-between items-end">
-                <span className="text-2xl font-bold text-blue-500">${item.price}</span>
-                <div className="flex items-center border border-gray-100 rounded-lg overflow-hidden">
-                  <button onClick={() => updateQuantity(item.id, -1)} className="p-2 hover:bg-gray-50 text-gray-400 border-r border-gray-100"><Minus size={16} /></button>
-                  <span className="w-10 text-center font-bold text-gray-900">{quantities[item.id]}</span>
-                  <button onClick={() => updateQuantity(item.id, 1)} className="p-2 hover:bg-gray-50 text-gray-400 border-l border-gray-100"><Plus size={16} /></button>
-                </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Summary Card */}
+        <div className="w-full lg:w-[400px]">
+          <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm">
+            <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Order details</h2>
+            <div className="space-y-6 mb-8 text-[15px]">
+              <div className="flex justify-between text-gray-500">
+                <span>Subtotal</span>
+                <span className="font-medium text-gray-900">${cartData.subtotal}</span>
+              </div>
+              <div className="flex justify-between text-gray-500">
+                <span>Shipping</span>
+                <span className="font-medium text-gray-900">Calculated at checkout</span>
+              </div>
+              <div className="pt-6 border-t border-gray-100 flex justify-between">
+                <span className="font-bold text-gray-900">Estimated Total</span>
+                <span className="font-bold text-gray-900">${cartData.total}</span>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
 
-      {/* Summary Card */}
-      <div className="w-full lg:w-[400px]">
-        <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Order details</h2>
-          <div className="space-y-6 mb-8 text-[15px]">
-            <div className="flex justify-between text-gray-500">
-              <span>Subtotal</span>
-              <span className="font-medium text-gray-900">${subtotal.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-gray-500">
-              <span>Shipping</span>
-              <span className="font-medium text-gray-900">${shipping.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-gray-500">
-              <span>Tax</span>
-              <span className="font-medium text-gray-900">${tax.toFixed(2)}</span>
-            </div>
-            <div className="pt-6 border-t border-gray-100 flex justify-between">
-              <span className="font-bold text-gray-900">Total</span>
-              <span className="font-bold text-gray-900">${total.toFixed(2)}</span>
-            </div>
+            <button 
+              onClick={() => setStep("checkout")}
+              className="w-full bg-blue-500 text-white font-bold py-4 rounded-lg hover:bg-blue-600 transition-all shadow-lg shadow-blue-50 mb-6"
+            >
+              Proceed to Checkout
+            </button>
+            <a href="/shop" className="block text-center text-sm font-medium text-blue-500 hover:underline">Continue Shopping</a>
           </div>
-
-          <p className="text-sm text-gray-500 mb-4">Do you have a promo code?</p>
-          <div className="flex gap-2 mb-8">
-            <input 
-              type="text" 
-              placeholder="Enter your code" 
-              className="flex-1 bg-gray-50 border border-gray-100 rounded-lg px-4 py-3 text-sm focus:bg-white outline-none"
-            />
-            <button className="bg-blue-500 text-white font-bold px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors">Apply</button>
-          </div>
-
-          <button 
-            onClick={() => setStep("checkout")}
-            className="w-full bg-blue-500 text-white font-bold py-4 rounded-lg hover:bg-blue-600 transition-all shadow-lg shadow-blue-50 mb-6"
-          >
-            Checkout
-          </button>
-          <a href="/shop" className="block text-center text-sm font-medium text-blue-500 hover:underline">Continue Shopping</a>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
-  const CheckoutStep = () => (
-    <div className="flex flex-col lg:flex-row gap-12">
+  const renderCheckoutStep = () => (
+    <form onSubmit={handleCheckout} className="flex flex-col lg:flex-row gap-12">
       {/* Form */}
       <div className="flex-1 space-y-12">
         <section>
@@ -177,39 +220,39 @@ export default function CartPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">First Name</label>
-              <input type="text" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500" />
+              <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} required className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500" />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Last Name</label>
-              <input type="text" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500" />
+              <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} required className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500" />
             </div>
             <div className="md:col-span-2 space-y-2">
               <label className="text-sm font-medium text-gray-700">Phone Number</label>
-              <input type="tel" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500" />
+              <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} required className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500" />
             </div>
             <div className="md:col-span-2 space-y-2">
               <label className="text-sm font-medium text-gray-700">E - Mail Address</label>
-              <input type="email" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500" />
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)} required className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500" />
             </div>
             <div className="md:col-span-2 space-y-2">
               <label className="text-sm font-medium text-gray-700">Country / Region</label>
-              <input type="text" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500" />
+              <input type="text" value={country} onChange={e => setCountry(e.target.value)} required className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500" />
             </div>
             <div className="md:col-span-2 space-y-2">
               <label className="text-sm font-medium text-gray-700">Street Address</label>
-              <input type="text" placeholder="House Number and street name" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500" />
+              <input type="text" value={address} onChange={e => setAddress(e.target.value)} required placeholder="House Number and street name" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500" />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Town / City</label>
-              <input type="text" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500" />
+              <input type="text" value={city} onChange={e => setCity(e.target.value)} required className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500" />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">State / Country</label>
-              <input type="text" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500" />
+              <label className="text-sm font-medium text-gray-700">State / Province</label>
+              <input type="text" value={state} onChange={e => setState(e.target.value)} required className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500" />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Zip / postcode</label>
-              <input type="text" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500" />
+              <input type="text" value={zipCode} onChange={e => setZipCode(e.target.value)} required className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500" />
             </div>
           </div>
         </section>
@@ -218,14 +261,9 @@ export default function CartPage() {
           <h2 className="text-2xl font-bold text-gray-900 mb-8">Additional information</h2>
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700">Order Notes ( Optional )</label>
-            <textarea placeholder="Notes about your order, e.g. special notes for delivery." rows={4} className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500 resize-none" />
+            <textarea value={orderNotes} onChange={e => setOrderNotes(e.target.value)} placeholder="Notes about your order, e.g. special notes for delivery." rows={4} className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500 resize-none" />
           </div>
         </section>
-
-        <div className="flex items-center gap-3">
-          <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-blue-500" />
-          <span className="text-sm text-gray-500">Save your information for your next order</span>
-        </div>
       </div>
 
       {/* Summary Card */}
@@ -240,13 +278,13 @@ export default function CartPage() {
             </div>
             
             <div className="space-y-4">
-              {cartItems.map(item => (
+              {cartData?.items.map((item: any) => (
                 <div key={item.id} className="flex justify-between text-sm text-gray-500">
                   <span className="flex items-center gap-4">
-                    <span>{quantities[item.id]}x</span>
-                    <span>T-Shirt</span>
+                    <span>{item.quantity}x</span>
+                    <span className="line-clamp-1">{item.product?.name}</span>
                   </span>
-                  <span className="font-bold text-gray-900">$100.00</span>
+                  <span className="font-bold text-gray-900">${item.item_total}</span>
                 </div>
               ))}
             </div>
@@ -254,32 +292,26 @@ export default function CartPage() {
             <div className="space-y-4 pt-8 border-t border-gray-100">
               <div className="flex justify-between text-sm text-gray-500">
                 <span>Subtotal</span>
-                <span className="font-bold text-gray-900">$300.00</span>
-              </div>
-              <div className="flex justify-between text-sm text-gray-500">
-                <span>Shipping</span>
-                <span className="font-bold text-gray-900">$15.00</span>
-              </div>
-              <div className="flex justify-between text-sm text-gray-500">
-                <span>Tax</span>
-                <span className="font-bold text-gray-900">$10.00</span>
+                <span className="font-bold text-gray-900">${cartData?.subtotal}</span>
               </div>
             </div>
 
             <div className="flex justify-between pt-6 border-t border-gray-100">
-              <span className="font-bold text-gray-900">Total</span>
-              <span className="font-bold text-gray-900">$325.00</span>
+              <span className="font-bold text-gray-900">Estimated Total</span>
+              <span className="font-bold text-gray-900">${cartData?.total}</span>
             </div>
           </div>
 
           <button 
-            onClick={() => setStep("confirmed")}
-            className="w-full bg-blue-500 text-white font-bold py-4 rounded-lg hover:bg-blue-600 transition-all shadow-lg shadow-blue-50 mb-6"
+            type="submit"
+            disabled={checkoutLoading}
+            className="w-full bg-blue-500 text-white font-bold py-4 rounded-lg hover:bg-blue-600 transition-all shadow-lg shadow-blue-50 mb-6 disabled:opacity-50 flex justify-center items-center"
           >
-            Pay with Stripe
+            {checkoutLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Pay with Stripe"}
           </button>
           
           <button 
+            type="button"
             onClick={() => setStep("cart")}
             className="w-full flex items-center justify-center gap-2 text-sm text-gray-400 hover:text-gray-900 transition-colors"
           >
@@ -287,10 +319,10 @@ export default function CartPage() {
           </button>
         </div>
       </div>
-    </div>
+    </form>
   );
 
-  const ConfirmedStep = () => (
+  const renderConfirmedStep = () => (
     <div className="text-center py-24 space-y-6">
       <div className="w-24 h-24 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8">
         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -323,11 +355,11 @@ export default function CartPage() {
           SHOPPING CART
         </h1>
 
-        <ProgressBar />
+        {renderProgressBar()}
 
-        {step === "cart" && <CartStep />}
-        {step === "checkout" && <CheckoutStep />}
-        {step === "confirmed" && <ConfirmedStep />}
+        {step === "cart" && renderCartStep()}
+        {step === "checkout" && renderCheckoutStep()}
+        {step === "confirmed" && renderConfirmedStep()}
       </div>
 
       <Footer />

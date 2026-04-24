@@ -5,9 +5,30 @@ import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { authService } from "@/services/auth.service";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
+    try {
+      await authService.login({ email, password });
+      window.location.href = "/";
+    } catch (err: any) {
+      console.error("Login failed:", err);
+      setError(err.response?.data?.detail || "Invalid email or password. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <main className="min-h-screen flex flex-col bg-gray-50">
@@ -31,19 +52,24 @@ export default function LoginPage() {
             <p className="text-gray-400 text-sm">Please enter your email and password to continue</p>
           </div>
 
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm">
+              {error}
+            </div>
+          )}
+
           <form 
             className="space-y-6" 
-            onSubmit={(e) => { 
-              e.preventDefault(); 
-              localStorage.setItem("isLoggedIn", "true"); 
-              window.location.href = "/";
-            }}
+            onSubmit={handleSubmit}
           >
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Email address</label>
               <input 
                 type="email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="esteban_schiller@gmail.com" 
+                required
                 className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500 transition-colors placeholder:text-gray-300"
               />
             </div>
@@ -53,7 +79,10 @@ export default function LoginPage() {
               <div className="relative">
                 <input 
                   type={showPassword ? "text" : "password"} 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="**********" 
+                  required
                   className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-blue-500 transition-colors placeholder:text-gray-300 pr-12"
                 />
                 <button 
@@ -76,9 +105,10 @@ export default function LoginPage() {
 
             <button 
               type="submit" 
-              className="w-full bg-[#3b82f6] text-white font-bold py-3.5 rounded-lg hover:bg-blue-600 transition-all shadow-lg shadow-blue-50"
+              disabled={isLoading}
+              className="w-full bg-[#3b82f6] text-white font-bold py-3.5 rounded-lg hover:bg-blue-600 transition-all shadow-lg shadow-blue-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Sign in
+              {isLoading ? "Signing in..." : "Sign in"}
             </button>
           </form>
 
@@ -89,6 +119,7 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
+
 
       <Footer />
     </main>
