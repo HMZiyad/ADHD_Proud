@@ -12,27 +12,91 @@
           "name": "Register",
           "request": {
             "method": "POST",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
-            "body": {"mode": "raw", "raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"SecurePass123!\",\n    \"confirm_password\": \"SecurePass123!\"\n}"},
-            "url": {"raw": "http://localhost:8000/api/users/register/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","users","register",""]}
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"SecurePass123!\",\n    \"confirm_password\": \"SecurePass123!\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/users/register/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "users",
+                "register",
+                ""
+              ]
+            }
           }
         },
         {
           "name": "Login (Get JWT Tokens)",
           "request": {
             "method": "POST",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
-            "body": {"mode": "raw", "raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"SecurePass123!\"\n}"},
-            "url": {"raw": "http://localhost:8000/api/users/login/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","users","login",""]}
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"SecurePass123!\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/users/login/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "users",
+                "login",
+                ""
+              ]
+            }
           }
         },
         {
           "name": "Refresh Token",
           "request": {
             "method": "POST",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
-            "body": {"mode": "raw", "raw": "{\n    \"refresh\": \"<YOUR_REFRESH_TOKEN>\"\n}"},
-            "url": {"raw": "http://localhost:8000/api/users/token/refresh/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","users","token","refresh",""]}
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"refresh\": \"<YOUR_REFRESH_TOKEN>\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/users/token/refresh/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "users",
+                "token",
+                "refresh",
+                ""
+              ]
+            }
           }
         }
       ]
@@ -44,27 +108,90 @@
           "name": "1. Forgot Password",
           "request": {
             "method": "POST",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
-            "body": {"mode": "raw", "raw": "{\n    \"email\": \"user@example.com\"\n}"},
-            "url": {"raw": "http://localhost:8000/api/users/forgot-password/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","users","forgot-password",""]}
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"user@example.com\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/users/forgot-password/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "users",
+                "forgot-password",
+                ""
+              ]
+            }
           }
         },
         {
           "name": "2. Verify OTP Code",
           "request": {
             "method": "POST",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
-            "body": {"mode": "raw", "raw": "{\n    \"email\": \"user@example.com\",\n    \"code\": \"12345\"\n}"},
-            "url": {"raw": "http://localhost:8000/api/users/verify-otp/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","users","verify-otp",""]}
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"user@example.com\",\n    \"code\": \"12345\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/users/verify-otp/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "users",
+                "verify-otp",
+                ""
+              ]
+            }
           }
         },
         {
           "name": "3. Reset Password",
           "request": {
             "method": "POST",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
-            "body": {"mode": "raw", "raw": "{\n    \"email\": \"user@example.com\",\n    \"new_password\": \"NewPass456!\",\n    \"confirm_password\": \"NewPass456!\"\n}"},
-            "url": {"raw": "http://localhost:8000/api/users/reset-password/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","users","reset-password",""]}
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"user@example.com\",\n    \"new_password\": \"NewPass456!\",\n    \"confirm_password\": \"NewPass456!\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/users/reset-password/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "users",
+                "reset-password",
+                ""
+              ]
+            }
           }
         }
       ]
@@ -74,19 +201,90 @@
       "item": [
         {
           "name": "List Categories",
-          "request": {"method": "GET", "url": {"raw": "http://localhost:8000/api/blog/categories/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","blog","categories",""]}}
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8000/api/blog/categories/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "blog",
+                "categories",
+                ""
+              ]
+            }
+          }
         },
         {
           "name": "List Posts",
-          "request": {"method": "GET", "url": {"raw": "http://localhost:8000/api/blog/posts/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","blog","posts",""]}}
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8000/api/blog/posts/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "blog",
+                "posts",
+                ""
+              ]
+            }
+          }
         },
         {
           "name": "Filter Posts by Category",
-          "request": {"method": "GET", "url": {"raw": "http://localhost:8000/api/blog/posts/?category__slug=adhd-awareness", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","blog","posts",""], "query": [{"key": "category__slug", "value": "adhd-awareness"}]}}
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8000/api/blog/posts/?category__slug=adhd-awareness",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "blog",
+                "posts",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "category__slug",
+                  "value": "adhd-awareness"
+                }
+              ]
+            }
+          }
         },
         {
           "name": "Single Post Detail",
-          "request": {"method": "GET", "url": {"raw": "http://localhost:8000/api/blog/posts/living-with-adhd/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","blog","posts","living-with-adhd",""]}}
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8000/api/blog/posts/living-with-adhd/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "blog",
+                "posts",
+                "living-with-adhd",
+                ""
+              ]
+            }
+          }
         }
       ]
     },
@@ -95,31 +293,178 @@
       "item": [
         {
           "name": "List Shop Categories",
-          "request": {"method": "GET", "url": {"raw": "http://localhost:8000/api/shop/categories/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","shop","categories",""]}}
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8000/api/shop/categories/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "shop",
+                "categories",
+                ""
+              ]
+            }
+          }
         },
         {
           "name": "List Products",
-          "request": {"method": "GET", "url": {"raw": "http://localhost:8000/api/shop/products/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","shop","products",""]}}
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8000/api/shop/products/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "shop",
+                "products",
+                ""
+              ]
+            }
+          }
         },
         {
           "name": "Filter Products by Category",
-          "request": {"method": "GET", "url": {"raw": "http://localhost:8000/api/shop/products/?category__slug=t-shirts", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","shop","products",""], "query": [{"key": "category__slug", "value": "t-shirts"}]}}
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8000/api/shop/products/?category__slug=t-shirts",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "shop",
+                "products",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "category__slug",
+                  "value": "t-shirts"
+                }
+              ]
+            }
+          }
         },
         {
           "name": "Single Product Detail",
-          "request": {"method": "GET", "url": {"raw": "http://localhost:8000/api/shop/products/urban-classic-tshirt/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","shop","products","urban-classic-tshirt",""]}}
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8000/api/shop/products/urban-classic-tshirt/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "shop",
+                "products",
+                "urban-classic-tshirt",
+                ""
+              ]
+            }
+          }
         },
         {
           "name": "Get Product Reviews",
-          "request": {"method": "GET", "url": {"raw": "http://localhost:8000/api/shop/products/urban-classic-tshirt/reviews/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","shop","products","urban-classic-tshirt","reviews",""]}}
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8000/api/shop/products/urban-classic-tshirt/reviews/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "shop",
+                "products",
+                "urban-classic-tshirt",
+                "reviews",
+                ""
+              ]
+            }
+          }
         },
         {
           "name": "Submit Product Review (Auth Required)",
           "request": {
             "method": "POST",
-            "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer <YOUR_ACCESS_TOKEN>"}],
-            "body": {"mode": "raw", "raw": "{\n    \"rating\": 5,\n    \"comment\": \"Absolutely love this shirt!\"\n}"},
-            "url": {"raw": "http://localhost:8000/api/shop/products/urban-classic-tshirt/reviews/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","shop","products","urban-classic-tshirt","reviews",""]}
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ACCESS_TOKEN>"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": 5,\n    \"comment\": \"Absolutely love this shirt!\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/shop/products/urban-classic-tshirt/reviews/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "shop",
+                "products",
+                "urban-classic-tshirt",
+                "reviews",
+                ""
+              ]
+            }
+          }
+        },
+        {
+          "name": "AI Style Suggestion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"query\": \"casual outfit for a summer beach party under 80 dollars\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/shop/ai-suggest/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "shop",
+                "ai-suggest",
+                ""
+              ]
+            },
+            "description": "POST /api/shop/ai-suggest/ \u2014 Natural-language style request. Returns { message, products[] }. Requires GOOGLE_API_KEY in .env."
           }
         }
       ]
@@ -132,101 +477,359 @@
           "name": "Get My Profile",
           "request": {
             "method": "GET",
-            "header": [{"key": "Authorization", "value": "Bearer <YOUR_ACCESS_TOKEN>"}],
-            "url": {"raw": "http://localhost:8000/api/profiles/me/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","profiles","me",""]}
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/profiles/me/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "profiles",
+                "me",
+                ""
+              ]
+            }
           }
         },
         {
           "name": "Update My Profile",
           "request": {
             "method": "PUT",
-            "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer <YOUR_ACCESS_TOKEN>"}],
-            "body": {"mode": "raw", "raw": "{\n    \"full_name\": \"Alex Rivera\",\n    \"phone\": \"+1 (555) 123-4567\",\n    \"city\": \"Los Angeles, CA\"\n}"},
-            "url": {"raw": "http://localhost:8000/api/profiles/me/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","profiles","me",""]}
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ACCESS_TOKEN>"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"full_name\": \"Alex Rivera\",\n    \"phone\": \"+1 (555) 123-4567\",\n    \"city\": \"Los Angeles, CA\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/profiles/me/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "profiles",
+                "me",
+                ""
+              ]
+            }
           }
         },
         {
           "name": "Get Profile Stats (Orders / Wishlist / Addresses Count)",
           "request": {
             "method": "GET",
-            "header": [{"key": "Authorization", "value": "Bearer <YOUR_ACCESS_TOKEN>"}],
-            "url": {"raw": "http://localhost:8000/api/profiles/me/stats/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","profiles","me","stats",""]}
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/profiles/me/stats/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "profiles",
+                "me",
+                "stats",
+                ""
+              ]
+            }
           }
         },
         {
           "name": "List Saved Addresses",
           "request": {
             "method": "GET",
-            "header": [{"key": "Authorization", "value": "Bearer <YOUR_ACCESS_TOKEN>"}],
-            "url": {"raw": "http://localhost:8000/api/profiles/addresses/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","profiles","addresses",""]}
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/profiles/addresses/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "profiles",
+                "addresses",
+                ""
+              ]
+            }
           }
         },
         {
           "name": "Add New Address",
           "request": {
             "method": "POST",
-            "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer <YOUR_ACCESS_TOKEN>"}],
-            "body": {"mode": "raw", "raw": "{\n    \"label\": \"home\",\n    \"street_address\": \"123 Main Street\",\n    \"apt_suite\": \"Apt 4B\",\n    \"city\": \"Austin\",\n    \"state\": \"Texas\",\n    \"zip_code\": \"78701\",\n    \"country\": \"USA\",\n    \"phone\": \"+1 (555) 123-4567\",\n    \"is_default\": true\n}"},
-            "url": {"raw": "http://localhost:8000/api/profiles/addresses/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","profiles","addresses",""]}
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ACCESS_TOKEN>"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"label\": \"home\",\n    \"street_address\": \"123 Main Street\",\n    \"apt_suite\": \"Apt 4B\",\n    \"city\": \"Austin\",\n    \"state\": \"Texas\",\n    \"zip_code\": \"78701\",\n    \"country\": \"USA\",\n    \"phone\": \"+1 (555) 123-4567\",\n    \"is_default\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/profiles/addresses/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "profiles",
+                "addresses",
+                ""
+              ]
+            }
           }
         },
         {
           "name": "Get My Wishlist",
           "request": {
             "method": "GET",
-            "header": [{"key": "Authorization", "value": "Bearer <YOUR_ACCESS_TOKEN>"}],
-            "url": {"raw": "http://localhost:8000/api/profiles/wishlist/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","profiles","wishlist",""]}
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/profiles/wishlist/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "profiles",
+                "wishlist",
+                ""
+              ]
+            }
           }
         },
         {
           "name": "Add Product to Wishlist",
           "request": {
             "method": "POST",
-            "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer <YOUR_ACCESS_TOKEN>"}],
-            "body": {"mode": "raw", "raw": "{\n    \"product_id\": 1\n}"},
-            "url": {"raw": "http://localhost:8000/api/profiles/wishlist/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","profiles","wishlist",""]}
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ACCESS_TOKEN>"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"product_id\": 1\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/profiles/wishlist/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "profiles",
+                "wishlist",
+                ""
+              ]
+            }
           }
         },
         {
           "name": "Remove from Wishlist",
           "request": {
             "method": "DELETE",
-            "header": [{"key": "Authorization", "value": "Bearer <YOUR_ACCESS_TOKEN>"}],
-            "url": {"raw": "http://localhost:8000/api/profiles/wishlist/1/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","profiles","wishlist","1",""]}
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/profiles/wishlist/1/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "profiles",
+                "wishlist",
+                "1",
+                ""
+              ]
+            }
           }
         },
         {
           "name": "Get Shopping Cart",
           "request": {
             "method": "GET",
-            "header": [{"key": "Authorization", "value": "Bearer <YOUR_ACCESS_TOKEN>"}],
-            "url": {"raw": "http://localhost:8000/api/profiles/cart/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","profiles","cart",""]}
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/profiles/cart/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "profiles",
+                "cart",
+                ""
+              ]
+            }
           }
         },
         {
           "name": "Add Item to Cart",
           "request": {
             "method": "POST",
-            "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer <YOUR_ACCESS_TOKEN>"}],
-            "body": {"mode": "raw", "raw": "{\n    \"product_id\": 1,\n    \"size\": \"L\",\n    \"color\": \"Gray\",\n    \"quantity\": 1\n}"},
-            "url": {"raw": "http://localhost:8000/api/profiles/cart/items/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","profiles","cart","items",""]}
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ACCESS_TOKEN>"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"product_id\": 1,\n    \"size\": \"L\",\n    \"color\": \"Gray\",\n    \"quantity\": 1\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/profiles/cart/items/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "profiles",
+                "cart",
+                "items",
+                ""
+              ]
+            }
           }
         },
         {
           "name": "Update Cart Item Quantity",
           "request": {
             "method": "PATCH",
-            "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer <YOUR_ACCESS_TOKEN>"}],
-            "body": {"mode": "raw", "raw": "{\n    \"quantity\": 2\n}"},
-            "url": {"raw": "http://localhost:8000/api/profiles/cart/items/1/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","profiles","cart","items","1",""]}
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ACCESS_TOKEN>"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"quantity\": 2\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/profiles/cart/items/1/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "profiles",
+                "cart",
+                "items",
+                "1",
+                ""
+              ]
+            }
           }
         },
         {
           "name": "Remove Item from Cart",
           "request": {
             "method": "DELETE",
-            "header": [{"key": "Authorization", "value": "Bearer <YOUR_ACCESS_TOKEN>"}],
-            "url": {"raw": "http://localhost:8000/api/profiles/cart/items/1/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","profiles","cart","items","1",""]}
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/profiles/cart/items/1/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "profiles",
+                "cart",
+                "items",
+                "1",
+                ""
+              ]
+            }
           }
         }
       ]
@@ -239,28 +842,82 @@
           "name": "Get Order History",
           "request": {
             "method": "GET",
-            "header": [{"key": "Authorization", "value": "Bearer <YOUR_ACCESS_TOKEN>"}],
-            "url": {"raw": "http://localhost:8000/api/orders/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","orders",""]}
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/orders/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "orders",
+                ""
+              ]
+            }
           }
         },
         {
           "name": "Get Single Order Detail",
           "request": {
             "method": "GET",
-            "header": [{"key": "Authorization", "value": "Bearer <YOUR_ACCESS_TOKEN>"}],
-            "url": {"raw": "http://localhost:8000/api/orders/ORD-2026-001234/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","orders","ORD-2026-001234",""]}
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/orders/ORD-2026-001234/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "orders",
+                "ORD-2026-001234",
+                ""
+              ]
+            }
           }
         },
         {
           "name": "Track Order by Tracking Number",
           "request": {
             "method": "GET",
-            "header": [{"key": "Authorization", "value": "Bearer <YOUR_ACCESS_TOKEN>"}],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ACCESS_TOKEN>"
+              }
+            ],
             "url": {
               "raw": "http://localhost:8000/api/orders/track/?tracking_number=USPS94855118992234567890",
-              "protocol": "http", "host": ["localhost"], "port": "8000",
-              "path": ["api","orders","track",""],
-              "query": [{"key": "tracking_number", "value": "USPS94855118992234567890"}]
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "orders",
+                "track",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "tracking_number",
+                  "value": "USPS94855118992234567890"
+                }
+              ]
             }
           }
         }
@@ -268,15 +925,21 @@
     },
     {
       "name": "Payment (Stripe)",
-      "description": "Stripe Checkout integration.\n\nSTEP 1: POST to 'Create Checkout Session' → get session_url + order_number\nSTEP 2: Open session_url in browser → pay with test card 4242 4242 4242 4242\nSTEP 3: Stripe CLI (running in Docker stripe-cli service) fires the webhook automatically\nSTEP 4: GET the order to confirm payment_status = 'paid'\n\nTest cards:\n  Success: 4242 4242 4242 4242\n  Decline: 4000 0000 0000 0002\n  Requires auth: 4000 0025 0000 3155",
+      "description": "Stripe Checkout integration.\n\nSTEP 1: POST to 'Create Checkout Session' \u00e2\u2020\u2019 get session_url + order_number\nSTEP 2: Open session_url in browser \u00e2\u2020\u2019 pay with test card 4242 4242 4242 4242\nSTEP 3: Stripe CLI (running in Docker stripe-cli service) fires the webhook automatically\nSTEP 4: GET the order to confirm payment_status = 'paid'\n\nTest cards:\n  Success: 4242 4242 4242 4242\n  Decline: 4000 0000 0000 0002\n  Requires auth: 4000 0025 0000 3155",
       "item": [
         {
           "name": "1. Create Checkout Session",
           "request": {
             "method": "POST",
             "header": [
-              {"key": "Content-Type", "value": "application/json"},
-              {"key": "Authorization", "value": "Bearer <YOUR_ACCESS_TOKEN>"}
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ACCESS_TOKEN>"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -284,19 +947,35 @@
             },
             "url": {
               "raw": "http://localhost:8000/api/orders/checkout/create-session/",
-              "protocol": "http", "host": ["localhost"], "port": "8000",
-              "path": ["api","orders","checkout","create-session",""]
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "orders",
+                "checkout",
+                "create-session",
+                ""
+              ]
             }
           }
         },
         {
-          "name": "2. Stripe Webhook — Simulate checkout.session.completed",
+          "name": "2. Stripe Webhook \u00e2\u20ac\u201d Simulate checkout.session.completed",
           "request": {
             "method": "POST",
             "header": [
-              {"key": "Content-Type", "value": "application/json"},
-              {"key": "Stripe-Signature", "value": "t=1234567890,v1=fake_signature_replace_or_disable_for_dev",
-               "description": "Stripe CLI generates this automatically. For manual dev testing without signature, temporarily set STRIPE_WEBHOOK_SECRET to empty string in .env."}
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Stripe-Signature",
+                "value": "t=1234567890,v1=fake_signature_replace_or_disable_for_dev",
+                "description": "Stripe CLI generates this automatically. For manual dev testing without signature, temporarily set STRIPE_WEBHOOK_SECRET to empty string in .env."
+              }
             ],
             "body": {
               "mode": "raw",
@@ -304,8 +983,17 @@
             },
             "url": {
               "raw": "http://localhost:8000/api/orders/webhook/",
-              "protocol": "http", "host": ["localhost"], "port": "8000",
-              "path": ["api","orders","webhook",""]
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "orders",
+                "webhook",
+                ""
+              ]
             }
           }
         },
@@ -313,12 +1001,872 @@
           "name": "3. Get Order (Verify payment_status = paid)",
           "request": {
             "method": "GET",
-            "header": [{"key": "Authorization", "value": "Bearer <YOUR_ACCESS_TOKEN>"}],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ACCESS_TOKEN>"
+              }
+            ],
             "url": {
               "raw": "http://localhost:8000/api/orders/ORD-2026-XXXXXX/",
-              "protocol": "http", "host": ["localhost"], "port": "8000",
-              "path": ["api","orders","ORD-2026-XXXXXX",""]
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "orders",
+                "ORD-2026-XXXXXX",
+                ""
+              ]
             }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin \u2014 Users",
+      "description": "Endpoints for logged-in admin/user password management. Requires JWT token.",
+      "item": [
+        {
+          "name": "Change Password (Logged-in user)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"current_password\": \"OldPass123!\",\n    \"new_password\": \"NewPass456!\",\n    \"confirm_password\": \"NewPass456!\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/users/change-password/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "users",
+                "change-password"
+              ]
+            },
+            "description": "POST /api/users/change-password/ \u2014 Requires IsAuthenticated. Changes password for the currently logged-in user."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin \u2014 Profile",
+      "description": "Admin profile endpoints. Require is_staff=True.",
+      "item": [
+        {
+          "name": "Get Admin Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/admin/profile/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "admin",
+                "profile"
+              ]
+            },
+            "description": "GET /api/admin/profile/ \u2014 Returns id, full_name, email, phone, avatar."
+          }
+        },
+        {
+          "name": "Update Admin Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "full_name",
+                  "value": "John Smith",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "+1 (555) 000-0000",
+                  "type": "text"
+                },
+                {
+                  "key": "avatar",
+                  "type": "file",
+                  "src": "/path/to/avatar.jpg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/admin/profile/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "admin",
+                "profile"
+              ]
+            },
+            "description": "PATCH /api/admin/profile/ \u2014 multipart/form-data. avatar is optional."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin \u2014 Dashboard",
+      "description": "Dashboard overview data. All require is_staff=True.",
+      "item": [
+        {
+          "name": "Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/admin/dashboard/stats/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "admin",
+                "dashboard",
+                "stats"
+              ]
+            },
+            "description": "GET /api/admin/dashboard/stats/ \u2014 Returns total_orders, total_products, total_customers, total_revenue."
+          }
+        },
+        {
+          "name": "Dashboard Orders Chart (Weekly)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/admin/dashboard/chart/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "admin",
+                "dashboard",
+                "chart"
+              ],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "week"
+                }
+              ]
+            },
+            "description": "GET /api/admin/dashboard/chart/?period=week \u2014 Returns 7 days of order counts [{date, orders}]."
+          }
+        },
+        {
+          "name": "Dashboard Recent Transactions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/admin/dashboard/transactions/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "admin",
+                "dashboard",
+                "transactions"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            },
+            "description": "GET /api/admin/dashboard/transactions/?limit=5 \u2014 Returns latest N orders as transactions."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin \u2014 Orders",
+      "description": "Admin order management. All require is_staff=True.",
+      "item": [
+        {
+          "name": "List All Orders (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/admin/orders/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "admin",
+                "orders"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "Pending",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "GET /api/admin/orders/ \u2014 Paginated list of ALL orders. Optional ?status=Pending|Shipped|Delivered|Cancelled"
+          }
+        },
+        {
+          "name": "Update Order Status (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"Shipped\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/admin/orders/ORD-2026-XXXXXX/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "admin",
+                "orders",
+                "ORD-2026-XXXXXX"
+              ]
+            },
+            "description": "PATCH /api/admin/orders/{order_number}/ \u2014 Allowed status values: Shipped, Delivered, Cancelled."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin \u2014 Products",
+      "description": "Admin product CRUD. All require is_staff=True.",
+      "item": [
+        {
+          "name": "Create Product (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "ADHD T-Shirt",
+                  "type": "text"
+                },
+                {
+                  "key": "category_slug",
+                  "value": "t-shirts",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "65.00",
+                  "type": "text"
+                },
+                {
+                  "key": "stock",
+                  "value": "42",
+                  "type": "text"
+                },
+                {
+                  "key": "sizes",
+                  "value": "S,M,L,XL",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Premium ADHD Proud T-Shirt.",
+                  "type": "text"
+                },
+                {
+                  "key": "image_file",
+                  "type": "file",
+                  "src": "/path/to/product.jpg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/admin/products/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "admin",
+                "products"
+              ]
+            },
+            "description": "POST /api/admin/products/ \u2014 multipart/form-data. Creates product + image + size variants."
+          }
+        },
+        {
+          "name": "Update Product (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "price",
+                  "value": "70.00",
+                  "type": "text"
+                },
+                {
+                  "key": "stock",
+                  "value": "30",
+                  "type": "text"
+                },
+                {
+                  "key": "sizes",
+                  "value": "S,M,L",
+                  "type": "text"
+                },
+                {
+                  "key": "image_file",
+                  "type": "file",
+                  "src": "/path/to/product.jpg",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/admin/products/1/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "admin",
+                "products",
+                "1"
+              ]
+            },
+            "description": "PATCH /api/admin/products/{id}/ \u2014 All fields optional. Replace {id} with real product ID."
+          }
+        },
+        {
+          "name": "Delete Product (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/admin/products/1/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "admin",
+                "products",
+                "1"
+              ]
+            },
+            "description": "DELETE /api/admin/products/{id}/ \u2014 Returns 204 No Content. Replace {id} with real product ID."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin \u2014 Customers",
+      "description": "Admin customer management. All require is_staff=True.",
+      "item": [
+        {
+          "name": "List All Customers (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/admin/customers/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "admin",
+                "customers"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "GET /api/admin/customers/ \u2014 Paginated list of all non-staff users with order stats."
+          }
+        },
+        {
+          "name": "Update Customer (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Alex Rivera\",\n    \"email\": \"alex@example.com\",\n    \"phone\": \"+1 (555) 101-0001\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/admin/customers/1/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "admin",
+                "customers",
+                "1"
+              ]
+            },
+            "description": "PATCH /api/admin/customers/{id}/ \u2014 Updates name, email, phone. Replace {id} with real user ID."
+          }
+        },
+        {
+          "name": "Delete Customer (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/admin/customers/1/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "admin",
+                "customers",
+                "1"
+              ]
+            },
+            "description": "DELETE /api/admin/customers/{id}/ \u2014 Returns 204 No Content. Replace {id} with real user ID."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin \u2014 Notifications",
+      "description": "Admin notification management. Require is_staff=True.",
+      "item": [
+        {
+          "name": "List Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/admin/notifications/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "admin",
+                "notifications"
+              ]
+            },
+            "description": "GET /api/admin/notifications/ \u2014 Returns the latest 50 notifications."
+          }
+        },
+        {
+          "name": "Mark All as Read",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/admin/notifications/mark-read/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "admin",
+                "notifications",
+                "mark-read"
+              ]
+            },
+            "description": "POST /api/admin/notifications/mark-read/ \u2014 Marks all unread notifications as read."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin \u2014 Blog",
+      "description": "Admin blog management. All require is_staff=True.",
+      "item": [
+        {
+          "name": "List Blog Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/admin/blog/categories/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "admin",
+                "blog",
+                "categories"
+              ]
+            },
+            "description": "GET /api/admin/blog/categories/ \u2014 Returns all categories (unpaginated) for dropdown."
+          }
+        },
+        {
+          "name": "List Blog Posts (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/admin/blog/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "admin",
+                "blog"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "GET /api/admin/blog/ \u2014 Paginated list of all blog posts."
+          }
+        },
+        {
+          "name": "Create Blog Post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "ADHD Productivity Tips for 2025",
+                  "type": "text"
+                },
+                {
+                  "key": "category_slug",
+                  "value": "lifestyle",
+                  "type": "text"
+                },
+                {
+                  "key": "excerpt",
+                  "value": "Discover techniques specifically designed for the ADHD brain.",
+                  "type": "text"
+                },
+                {
+                  "key": "content",
+                  "value": "## Introduction\nLiving with ADHD can be challenging but also rewarding...",
+                  "type": "text"
+                },
+                {
+                  "key": "published_date",
+                  "value": "2025-04-27",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "/path/to/blog-image.jpg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/admin/blog/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "admin",
+                "blog"
+              ]
+            },
+            "description": "POST /api/admin/blog/ \u2014 multipart/form-data. Slug auto-generated from title. Author set to logged-in admin."
+          }
+        },
+        {
+          "name": "Get Blog Post (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/admin/blog/1/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "admin",
+                "blog",
+                "1"
+              ]
+            },
+            "description": "GET /api/admin/blog/{id}/ \u2014 Retrieve a single post by ID."
+          }
+        },
+        {
+          "name": "Update Blog Post",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Updated Title",
+                  "type": "text"
+                },
+                {
+                  "key": "excerpt",
+                  "value": "Updated excerpt text.",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "/path/to/new-image.jpg",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/admin/blog/1/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "admin",
+                "blog",
+                "1"
+              ]
+            },
+            "description": "PATCH /api/admin/blog/{id}/ \u2014 All fields optional. Replace {id} with real post ID."
+          }
+        },
+        {
+          "name": "Delete Blog Post",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <YOUR_ADMIN_ACCESS_TOKEN>"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/admin/blog/1/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "admin",
+                "blog",
+                "1"
+              ]
+            },
+            "description": "DELETE /api/admin/blog/{id}/ \u2014 Returns 204 No Content."
           }
         }
       ]

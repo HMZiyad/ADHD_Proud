@@ -30,6 +30,16 @@ export const profileService = {
     return response.data;
   },
 
+  async deleteAddress(id: number) {
+    const response = await api.delete(`profiles/addresses/${id}/`);
+    return response.data;
+  },
+
+  async setDefaultAddress(id: number) {
+    const response = await api.patch(`profiles/addresses/${id}/`, { is_default: true });
+    return response.data;
+  },
+
   // Wishlist
   async getWishlist() {
     const response = await api.get('profiles/wishlist/');
@@ -52,7 +62,7 @@ export const profileService = {
     return response.data;
   },
 
-  async addToCart(data: { product_id: number; size: string; color: string; quantity: number }) {
+  async addToCart(data: { product_id: number; size?: string; color?: string; quantity: number }) {
     const response = await api.post('profiles/cart/items/', data);
     if (typeof window !== 'undefined') window.dispatchEvent(new Event('cartUpdated'));
     return response.data;

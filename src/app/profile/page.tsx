@@ -14,6 +14,9 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [showAvatarMenu, setShowAvatarMenu] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [editFormData, setEditFormData] = useState({ full_name: '', phone: '', city: '' });
+  const [savingProfile, setSavingProfile] = useState(false);
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -48,6 +51,30 @@ export default function ProfilePage() {
       alert(`Failed to delete profile picture: ${backendError}`);
     } finally {
       setUploadingAvatar(false);
+    }
+  };
+
+  const handleEditProfileClick = () => {
+    setEditFormData({
+      full_name: profile.full_name || '',
+      phone: profile.phone || '',
+      city: profile.city || ''
+    });
+    setIsEditingProfile(true);
+  };
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      setSavingProfile(true);
+      await profileService.updateProfile(editFormData);
+      await fetchProfileData();
+      setIsEditingProfile(false);
+    } catch (error: any) {
+      console.error("Failed to update profile", error);
+      alert("Failed to update profile. Please try again.");
+    } finally {
+      setSavingProfile(false);
     }
   };
 
@@ -210,7 +237,7 @@ export default function ProfilePage() {
         <div className="bg-white border border-gray-100 rounded-2xl p-10 md:p-12 shadow-sm mb-24">
           <div className="flex items-center justify-between mb-12 border-b border-gray-50 pb-8">
             <h2 className="text-2xl font-bold text-gray-900">Account Information</h2>
-            <button className="flex items-center gap-2 text-blue-500 font-bold text-sm hover:underline">
+            <button onClick={handleEditProfileClick} className="flex items-center gap-2 text-blue-500 font-bold text-sm hover:underline">
               <Edit size={18} />
               Edit
             </button>
@@ -238,6 +265,63 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
+      {isEditingProfile && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">Edit Profile</h3>
+            <form onSubmit={handleSaveProfile} className="flex flex-col gap-5">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                <input 
+                  type="text" 
+                  value={editFormData.full_name} 
+                  onChange={(e) => setEditFormData({...editFormData, full_name: e.target.value})}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  placeholder="Enter your full name"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                <input 
+                  type="text" 
+                  value={editFormData.phone} 
+                  onChange={(e) => setEditFormData({...editFormData, phone: e.target.value})}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  placeholder="Enter your phone number"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+                <input 
+                  type="text" 
+                  value={editFormData.city} 
+                  onChange={(e) => setEditFormData({...editFormData, city: e.target.value})}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  placeholder="Enter your city"
+                />
+              </div>
+              <div className="flex gap-4 mt-4">
+                <button 
+                  type="button" 
+                  onClick={() => setIsEditingProfile(false)}
+                  className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 font-bold rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  disabled={savingProfile}
+                  className="flex-1 py-3 px-4 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                >
+                  {savingProfile && <Loader2 size={18} className="animate-spin" />}
+                  {savingProfile ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </main>

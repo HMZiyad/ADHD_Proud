@@ -24,5 +24,10 @@ export const shopService = {
   async submitProductReview(slug: string, review: { rating: number; comment: string }) {
     const response = await api.post(`shop/products/${slug}/reviews/`, review);
     return response.data;
+  },
+
+  async aiSuggest(query: string) {
+    const response = await api.post('shop/ai-suggest/', { query });
+    return response.data; // { message: string, products: Product[] }
   }
 };
