@@ -8,7 +8,6 @@ import Footer from "../components/Footer";
 import { Search, Filter, Sparkles, ChevronLeft, ChevronRight, Loader2, X, Send, Bot, ArrowRight, Heart, Check } from "lucide-react";
 import { shopService } from "@/services/shop.service";
 import { profileService } from "@/services/profile.service";
-import { toast } from "react-hot-toast"; 
 
 
 /* ─── Star Rating ─────────────────────────────────────────────────────────── */
