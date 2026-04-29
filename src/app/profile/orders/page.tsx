@@ -54,7 +54,7 @@ export default function OrdersPage() {
                   {/* Order Header */}
                   <div className="bg-gray-50/50 px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100">
                     <div className="flex flex-col gap-1">
-                      <h3 className="font-bold text-gray-900">Order {order.id}</h3>
+                      <h3 className="font-bold text-gray-900">Order #{order.order_number}</h3>
                       <div className="flex items-center gap-2 text-xs text-gray-500">
                         <Clock size={14} />
                         {new Date(order.created_at).toLocaleDateString()}
@@ -78,12 +78,17 @@ export default function OrdersPage() {
                   <div className="p-6 space-y-6">
                     {order.items && order.items.map((item: any, idx: number) => (
                       <div key={idx} className="flex gap-6 pb-6 border-b border-gray-50 last:border-0 last:pb-0">
-                        <div className="w-20 h-20 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center p-2">
-                          <Image src={item.product?.primary_image || "/assets/placeholder.png"} alt={item.product?.name || "Product"} width={60} height={60} className="object-contain" />
+                        <div className="w-20 h-20 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center p-2 relative">
+                          <Image 
+                            src={item.product_image || "/assets/placeholder.png"} 
+                            alt={item.product_name || "Product"} 
+                            fill 
+                            className="object-contain p-2" 
+                          />
                         </div>
                         <div className="flex-1 flex flex-col justify-center">
                           <div className="flex justify-between items-start mb-1">
-                            <h4 className="font-bold text-gray-800">{item.product?.name}</h4>
+                            <h4 className="font-bold text-gray-800">{item.product_name}</h4>
                             <span className="font-bold text-gray-900">${item.price}</span>
                           </div>
                           <p className="text-xs text-gray-400">
@@ -100,7 +105,7 @@ export default function OrdersPage() {
                       Tracking: <span className="font-medium text-gray-600">{order.tracking_number || "Pending"}</span>
                     </div>
                     <div className="font-bold text-gray-900 mt-2 md:mt-0">
-                      Total: <span className="text-xl">${order.total_amount}</span>
+                      Total: <span className="text-xl">${order.total_price}</span>
                     </div>
                   </div>
                 </div>

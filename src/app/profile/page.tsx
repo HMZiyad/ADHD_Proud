@@ -215,7 +215,7 @@ export default function ProfilePage() {
           <a href="/profile/wishlist" className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm flex items-center justify-between group hover:shadow-md transition-all">
             <div>
               <p className="text-sm font-medium text-gray-500 mb-2">Wishlist</p>
-              <h2 className="text-4xl font-bold text-gray-900">{stats?.total_wishlist || 0}</h2>
+              <h2 className="text-4xl font-bold text-gray-900">{stats?.wishlist_count || 0}</h2>
             </div>
             <div className="w-16 h-16 bg-blue-50 rounded-xl flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
               <Heart size={32} strokeWidth={1.5} />
@@ -225,7 +225,7 @@ export default function ProfilePage() {
           <a href="/profile/addresses" className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm flex items-center justify-between group hover:shadow-md transition-all">
             <div>
               <p className="text-sm font-medium text-gray-500 mb-2">Saved Addresses</p>
-              <h2 className="text-4xl font-bold text-gray-900">{stats?.total_addresses || 0}</h2>
+              <h2 className="text-4xl font-bold text-gray-900">{stats?.saved_addresses_count || 0}</h2>
             </div>
             <div className="w-16 h-16 bg-blue-50 rounded-xl flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
               <MapPin size={32} strokeWidth={1.5} />

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { Star, Plus, Minus, ThumbsUp, ThumbsDown, ArrowRight, ChevronRight, Loader2 } from "lucide-react";
+import { Star, Plus, Minus, ThumbsUp, ThumbsDown, ArrowRight, ChevronRight, Loader2, Check, ShoppingBag, X } from "lucide-react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { shopService } from "@/services/shop.service";
@@ -38,14 +38,8 @@ export default function ProductPage() {
   const [submittingReview, setSubmittingReview] = useState(false);
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
-
-  const sizes = ["XS", "S", "M", "L", "XL"];
-  const colors = [
-    { name: "navy", class: "bg-[#1e293b]" },
-    { name: "beige", class: "bg-[#d4c3b3]" },
-    { name: "black", class: "bg-black" },
-    { name: "purple", class: "bg-[#6b21a8]" },
-  ];
+  const [activeImage, setActiveImage] = useState<string | null>(null);
+  const [showCartModal, setShowCartModal] = useState(false);
 
   useEffect(() => {
     if (slug) {
@@ -59,6 +53,11 @@ export default function ProductPage() {
       const data = await shopService.getProductBySlug(slug);
       setProduct(data);
       if (data) {
+        setActiveImage(data.primary_image);
+        // Set defaults
+        if (data.sizes?.length > 0) setSelectedSize(data.sizes[0].size);
+        if (data.colors?.length > 0) setSelectedColor(data.colors[0].color_hex);
+        
         // Fetch reviews
         const reviewData = await shopService.getProductReviews(slug);
         setReviews(reviewData);
@@ -76,11 +75,11 @@ export default function ProductPage() {
       setAddingToCart(true);
       await profileService.addToCart({
         product_id: product.id,
-        size: selectedSize || sizes[0],
-        color: selectedColor || colors[0].name,
+        size: selectedSize || (product.sizes?.[0]?.size || ""),
+        color: selectedColor || (product.colors?.[0]?.color_hex || ""),
         quantity: quantity
       });
-      alert("Added to cart!");
+      setShowCartModal(true);
     } catch (error) {
       console.error("Failed to add to cart", error);
       alert("Please login to add to cart.");
@@ -110,6 +109,12 @@ export default function ProductPage() {
       setSubmittingReview(false);
     }
   };
+
+  const selectedSizeData = product?.sizes?.find((s: any) => s.size === selectedSize);
+  const isOutOfStock = product && (
+    (product.stock_quantity !== undefined && product.stock_quantity !== null && product.stock_quantity <= 0) || 
+    (selectedSize && selectedSizeData && (selectedSizeData.stock === undefined || selectedSizeData.stock === null || selectedSizeData.stock <= 0))
+  );
 
   if (loading) {
     return (
@@ -154,30 +159,39 @@ export default function ProductPage() {
           <div className="md:col-span-6">
             <div className="bg-[#f8f9fb] rounded-lg aspect-square relative mb-6 overflow-hidden flex items-center justify-center p-12">
               <Image 
-                src={product.primary_image || "/assets/placeholder.png"} 
+                src={activeImage || product.primary_image || "/assets/placeholder.png"} 
                 alt={product.name} 
                 fill
                 className="object-contain"
               />
             </div>
-            <div className="grid grid-cols-3 gap-4">
-              {[product.primary_image, product.primary_image, product.primary_image].map((img, i) => (
-                <div key={i} className="bg-[#f8f9fb] rounded-lg aspect-square relative cursor-pointer hover:border-gray-300 border-2 border-transparent transition-all flex items-center justify-center p-4">
-                  <Image 
-                    src={img || "/assets/placeholder.png"} 
-                    alt={`Thumbnail ${i}`} 
-                    fill 
-                    className="object-contain"
-                  />
-                </div>
-              ))}
-            </div>
+            {product.images && product.images.length > 0 && (
+              <div className="grid grid-cols-4 gap-4">
+                {product.images.map((img: any, i: number) => (
+                  <div 
+                    key={i} 
+                    onClick={() => setActiveImage(img.image)}
+                    className={`bg-[#f8f9fb] rounded-lg aspect-square relative cursor-pointer transition-all flex items-center justify-center p-4 border-2 
+                      ${activeImage === img.image ? "border-blue-500 shadow-sm" : "border-transparent hover:border-gray-300"}`}
+                  >
+                    <Image 
+                      src={img.image || "/assets/placeholder.png"} 
+                      alt={`Thumbnail ${i}`} 
+                      fill 
+                      className="object-contain"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Info - Right */}
           <div className="md:col-span-6">
             <div className="mb-2">
-              <span className="text-xs text-gray-400 font-medium">In Stock</span>
+              <span className={`text-xs font-bold uppercase ${isOutOfStock ? "text-red-500" : "text-green-500"}`}>
+                {isOutOfStock ? "Out of Stock" : "In Stock"}
+              </span>
             </div>
             <h1 className="text-4xl font-heading font-black tracking-tight text-gray-900 mb-2 uppercase">
               {product.name}
@@ -185,7 +199,7 @@ export default function ProductPage() {
             <p className="text-sm text-gray-500 mb-6 italic">{product.category?.name || "Apparel"}</p>
             
             <p className="text-gray-600 text-[15px] mb-8 leading-relaxed max-w-xl">
-              {product.description || "A stylish piece designed to elevate your look with a modern fit and cool, confident feel."}
+              {product.short_description || product.description || "A stylish piece designed to elevate your look with a modern fit and cool, confident feel."}
             </p>
 
             <div className="flex items-center gap-4 mb-8">
@@ -201,14 +215,16 @@ export default function ProductPage() {
             <div className="mb-8">
               <h3 className="text-sm font-bold text-gray-900 mb-4">Available Size</h3>
               <div className="flex gap-3">
-                {sizes.map((size) => (
+                {product.sizes?.map((item: any) => (
                   <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
+                    key={item.id}
+                    onClick={() => setSelectedSize(item.size)}
+                    disabled={item.stock <= 0}
                     className={`w-12 h-10 flex items-center justify-center text-xs font-bold rounded transition-all border-2 
-                      ${selectedSize === size ? "bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-100" : "bg-white border-gray-100 text-gray-500 hover:border-gray-200"}`}
+                      ${item.stock <= 0 ? "bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed line-through" : 
+                        selectedSize === item.size ? "bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-100" : "bg-white border-gray-100 text-gray-500 hover:border-gray-200"}`}
                   >
-                    {size}
+                    {item.size}
                   </button>
                 ))}
               </div>
@@ -218,14 +234,17 @@ export default function ProductPage() {
             <div className="mb-10">
               <h3 className="text-sm font-bold text-gray-900 mb-4">Colors</h3>
               <div className="flex gap-4">
-                {colors.map((color) => (
+                {product.colors?.map((item: any) => (
                   <button
-                    key={color.name}
-                    onClick={() => setSelectedColor(color.name)}
+                    key={item.id}
+                    onClick={() => setSelectedColor(item.color_hex)}
                     className={`w-8 h-8 rounded-full border-2 transition-all p-0.5
-                      ${selectedColor === color.name ? "border-blue-600" : "border-transparent"}`}
+                      ${selectedColor === item.color_hex ? "border-blue-600" : "border-transparent"}`}
                   >
-                    <div className={`w-full h-full rounded-full ${color.class}`}></div>
+                    <div 
+                      className="w-full h-full rounded-full" 
+                      style={{ backgroundColor: item.color_hex }}
+                    ></div>
                   </button>
                 ))}
               </div>
@@ -252,15 +271,26 @@ export default function ProductPage() {
                 </div>
               </div>
 
-              <button 
-                onClick={handleAddToCart}
-                disabled={addingToCart}
-                className="bg-blue-600 text-white font-bold py-4 px-8 rounded-md hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 w-full md:w-fit min-w-[280px] disabled:opacity-50"
-              >
-                {addingToCart ? "Adding..." : "Add to cart"}
-              </button>
+              {isOutOfStock ? (
+                <button 
+                  disabled
+                  className="bg-gray-200 text-gray-500 font-bold py-4 px-8 rounded-md cursor-not-allowed w-full md:w-fit min-w-[280px]"
+                >
+                  Out of Stock
+                </button>
+              ) : (
+                <button 
+                  onClick={handleAddToCart}
+                  disabled={addingToCart}
+                  className="bg-blue-600 text-white font-bold py-4 px-8 rounded-md hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 w-full md:w-fit min-w-[280px] disabled:opacity-50"
+                >
+                  {addingToCart ? "Adding..." : "Add to cart"}
+                </button>
+              )}
 
-              <p className="text-gray-900 italic font-medium">Limited stock available — grab yours now</p>
+              <p className="text-gray-900 italic font-medium">
+                {isOutOfStock ? "Sign up to be notified when this item is back in stock" : "Limited stock available — grab yours now"}
+              </p>
             </div>
           </div>
         </div>
@@ -365,6 +395,48 @@ export default function ProductPage() {
       </div>
 
       <Footer />
+
+      {/* Cart Success Modal */}
+      {showCartModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-10 duration-500 ease-out">
+            <div className="relative p-8 flex flex-col items-center text-center">
+              <button 
+                onClick={() => setShowCartModal(false)}
+                className="absolute top-6 right-6 p-1 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <X size={20} className="text-gray-400" />
+              </button>
+
+              <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mb-6 relative">
+                <div className="absolute inset-0 bg-green-100 rounded-full animate-ping opacity-20" />
+                <Check size={40} className="text-green-500" strokeWidth={3} />
+              </div>
+
+              <h2 className="text-2xl font-heading font-black text-gray-900 mb-2">ADDED TO CART!</h2>
+              <p className="text-gray-500 mb-8">
+                The <span className="font-bold text-gray-900">"{product.name}"</span> has been successfully added to your shopping bag.
+              </p>
+
+              <div className="flex flex-col w-full gap-3">
+                <button 
+                  onClick={() => window.location.href = "/cart"}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-200 active:scale-[0.98]"
+                >
+                  <ShoppingBag size={20} />
+                  View Shopping Bag
+                </button>
+                <button 
+                  onClick={() => setShowCartModal(false)}
+                  className="w-full bg-white border-2 border-gray-100 hover:border-gray-200 text-gray-600 py-4 rounded-2xl font-bold transition-all active:scale-[0.98]"
+                >
+                  Continue Shopping
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

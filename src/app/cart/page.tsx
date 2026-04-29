@@ -167,7 +167,7 @@ export default function CartPage() {
                 </div>
                 
                 <div className="flex justify-between items-end">
-                  <span className="text-2xl font-bold text-blue-500">${item.item_total}</span>
+                  <span className="text-2xl font-bold text-blue-500">${item.total_price}</span>
                   <div className="flex items-center border border-gray-100 rounded-lg overflow-hidden">
                     <button disabled={updatingId === item.id} onClick={() => updateQuantity(item.id, item.quantity, -1)} className="p-2 hover:bg-gray-50 text-gray-400 border-r border-gray-100 disabled:opacity-50"><Minus size={16} /></button>
                     <span className="w-10 text-center font-bold text-gray-900">{item.quantity}</span>
@@ -284,7 +284,7 @@ export default function CartPage() {
                     <span>{item.quantity}x</span>
                     <span className="line-clamp-1">{item.product?.name}</span>
                   </span>
-                  <span className="font-bold text-gray-900">${item.item_total}</span>
+                  <span className="font-bold text-gray-900">${item.total_price}</span>
                 </div>
               ))}
             </div>

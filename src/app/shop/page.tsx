@@ -5,8 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { Search, Filter, Sparkles, ChevronLeft, ChevronRight, Loader2, X, Send, Bot, ArrowRight } from "lucide-react";
+import { Search, Filter, Sparkles, ChevronLeft, ChevronRight, Loader2, X, Send, Bot, ArrowRight, Heart, Check } from "lucide-react";
 import { shopService } from "@/services/shop.service";
+import { profileService } from "@/services/profile.service";
+import { toast } from "react-hot-toast"; 
+
 
 /* ─── Star Rating ─────────────────────────────────────────────────────────── */
 const StarRating = ({ rating, count }: { rating: number; count: number }) => (
@@ -25,19 +28,24 @@ const StarRating = ({ rating, count }: { rating: number; count: number }) => (
 );
 
 /* ─── Product Card (shared between grid & AI results) ─────────────────────── */
-const ProductCard = ({ product, compact = false }: { product: any; compact?: boolean }) => (
+const ProductCard = ({ product, compact = false, onAddToWishlist }: { product: any; compact?: boolean; onAddToWishlist?: (p: any) => void }) => (
   <div className={`group flex flex-col bg-white rounded-2xl ${compact ? "p-2" : "p-3"} transition-all duration-300 hover:shadow-2xl hover:shadow-gray-200/60 hover:-translate-y-1 border border-transparent hover:border-gray-100`}>
     <Link
       href={`/products/${product.slug}`}
       className={`${compact ? "aspect-square" : "aspect-[4/5]"} w-full bg-gray-50 rounded-xl relative mb-3 flex items-center justify-center overflow-hidden`}
     >
-      <Image
-        src={product.primary_image || "/assets/placeholder.png"}
-        alt={product.name}
-        fill
-        className="object-contain p-4 mix-blend-multiply group-hover:scale-110 transition-transform duration-500 ease-out"
-      />
-    </Link>
+        <Image
+          src={product.primary_image || "/assets/placeholder.png"}
+          alt={product.name}
+          fill
+          className={`object-contain p-4 mix-blend-multiply group-hover:scale-110 transition-transform duration-500 ease-out ${product.stock_quantity <= 0 ? "grayscale opacity-60" : ""}`}
+        />
+        {product.stock_quantity <= 0 && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/5 backdrop-blur-[1px]">
+            <span className="bg-black text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-xl">Sold Out</span>
+          </div>
+        )}
+      </Link>
     <div className="flex flex-col gap-1 px-1">
       <Link href={`/products/${product.slug}`} className="hover:text-blue-600 transition-colors">
         <h3 className={`font-medium text-black ${compact ? "text-[13px]" : "text-[15px]"} line-clamp-1`}>
@@ -59,8 +67,23 @@ const ProductCard = ({ product, compact = false }: { product: any; compact?: boo
           >
             View Details
           </Link>
-          <button className="flex-1 py-2 text-sm font-bold rounded-md bg-[#3b82f6] text-white hover:bg-blue-600 transition-all shadow-sm active:scale-95">
-            Add to Cart
+          <button 
+            onClick={async (e) => {
+              e.preventDefault();
+              if (onAddToWishlist) {
+                onAddToWishlist(product);
+              } else {
+                try {
+                  await profileService.addToWishlist(product.id);
+                  alert("Added to wishlist!");
+                } catch (err) {
+                  alert("Failed to add to wishlist.");
+                }
+              }
+            }}
+            className="flex-1 py-2 text-[11px] font-bold rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all border border-blue-100 active:scale-95 uppercase tracking-wider"
+          >
+            Add to Wishlist
           </button>
         </div>
       )}
@@ -362,7 +385,10 @@ export default function Shop() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [showAI, setShowAI] = useState(false);
+  const [showWishlistModal, setShowWishlistModal] = useState(false);
+  const [lastAddedProduct, setLastAddedProduct] = useState<any>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -392,7 +418,7 @@ export default function Shop() {
     try {
       const params: any = {};
       if (searchTerm) params.search = searchTerm;
-      if (activeCategory) params.category = activeCategory;
+      if (activeCategory) params.category__slug = activeCategory;
       const data = await shopService.getProducts(params);
       setProducts(data);
     } catch (error) {
@@ -448,10 +474,47 @@ export default function Shop() {
                   className="border border-gray-300 rounded-full pl-10 pr-4 py-2 text-sm w-full sm:w-[280px] focus:outline-none focus:border-[#3b82f6]"
                 />
               </div>
-              <div className="flex items-center gap-3 w-full sm:w-auto">
-                <button className="border border-gray-300 rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-50 transition-colors shrink-0">
-                  <Filter className="w-4 h-4 text-gray-500" strokeWidth={2} />
+              <div className="flex items-center gap-3 w-full sm:w-auto relative">
+                <button 
+                  onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+                  className={`border ${showCategoryDropdown ? "border-[#3b82f6] bg-blue-50" : "border-gray-300"} rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-50 transition-colors shrink-0`}
+                  title="Select Category"
+                >
+                  <Filter className={`w-4 h-4 ${showCategoryDropdown ? "text-blue-600" : "text-gray-500"}`} strokeWidth={2} />
                 </button>
+
+                {showCategoryDropdown && (
+                  <div className="absolute top-12 right-0 w-48 bg-white border border-gray-100 rounded-2xl shadow-2xl z-50 py-2 animate-in fade-in zoom-in duration-200">
+                    <div className="px-4 py-2 border-b border-gray-50 mb-1">
+                      <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Categories</span>
+                    </div>
+                    <button
+                      onClick={() => { setActiveCategory(null); setShowCategoryDropdown(false); }}
+                      className={`w-full text-left px-4 py-2.5 text-[13px] transition-colors hover:bg-gray-50 ${!activeCategory ? "text-blue-600 font-bold bg-blue-50/50" : "text-gray-700"}`}
+                    >
+                      All Items
+                    </button>
+                    {categories.map((cat) => (
+                      <button
+                        key={cat.id}
+                        onClick={() => { setActiveCategory(cat.slug); setShowCategoryDropdown(false); }}
+                        className={`w-full text-left px-4 py-2.5 text-[13px] transition-colors hover:bg-gray-50 ${activeCategory === cat.slug ? "text-blue-600 font-bold bg-blue-50/50" : "text-gray-700"}`}
+                      >
+                        {cat.name}
+                      </button>
+                    ))}
+                    {categories.length > 0 && (
+                      <div className="mt-1 pt-1 border-t border-gray-50">
+                        <button
+                          onClick={() => { setSearchTerm(""); setActiveCategory(null); setShowCategoryDropdown(false); }}
+                          className="w-full text-left px-4 py-2 text-[11px] text-red-500 hover:text-red-600 transition-colors"
+                        >
+                          Reset Filters
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* AI Button */}
                 <button
@@ -487,7 +550,19 @@ export default function Shop() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 gap-y-12 mb-20">
               {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard 
+                  key={product.id} 
+                  product={product} 
+                  onAddToWishlist={async (p) => {
+                    try {
+                      await profileService.addToWishlist(p.id);
+                      setLastAddedProduct(p);
+                      setShowWishlistModal(true);
+                    } catch (err) {
+                      alert("Failed to add to wishlist. Are you logged in?");
+                    }
+                  }}
+                />
               ))}
             </div>
           )}
@@ -508,6 +583,48 @@ export default function Shop() {
 
         <Footer />
       </main>
+
+      {/* Wishlist Success Modal */}
+      {showWishlistModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-10 duration-500 ease-out">
+            <div className="relative p-8 flex flex-col items-center text-center">
+              <button 
+                onClick={() => setShowWishlistModal(false)}
+                className="absolute top-6 right-6 p-1 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <X size={20} className="text-gray-400" />
+              </button>
+
+              <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mb-6 relative">
+                <div className="absolute inset-0 bg-blue-100 rounded-full animate-ping opacity-20" />
+                <Heart size={40} className="text-blue-500" fill="currentColor" />
+              </div>
+
+              <h2 className="text-2xl font-heading font-black text-gray-900 mb-2 uppercase tracking-tight">SAVED TO WISHLIST!</h2>
+              <p className="text-gray-500 mb-8">
+                <span className="font-bold text-gray-900">"{lastAddedProduct?.name}"</span> has been added to your favorites.
+              </p>
+
+              <div className="flex flex-col w-full gap-3">
+                <button 
+                  onClick={() => window.location.href = "/profile/wishlist"}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-200 active:scale-[0.98]"
+                >
+                  View Wishlist
+                  <ArrowRight size={18} />
+                </button>
+                <button 
+                  onClick={() => setShowWishlistModal(false)}
+                  className="w-full bg-white border-2 border-gray-100 hover:border-gray-200 text-gray-600 py-4 rounded-2xl font-bold transition-all active:scale-[0.98]"
+                >
+                  Continue Browsing
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* AI Suggestion Panel (portal-style overlay) */}
       {showAI && <AISuggestionPanel onClose={() => setShowAI(false)} />}
