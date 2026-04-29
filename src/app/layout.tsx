@@ -17,6 +17,9 @@ const bebasNeue = Bebas_Neue({
 export const metadata: Metadata = {
   title: "ADHD PROUD",
   description: "Wired different. Built different.",
+  icons: {
+    icon: "/assets/logo_black.png",
+  },
 };
 
 export default function RootLayout({
