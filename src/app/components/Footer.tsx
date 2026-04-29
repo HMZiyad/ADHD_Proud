@@ -59,16 +59,16 @@ export default function Footer() {
                   +1 (555) 123-4567
                 </li>
                 <li className="flex items-center gap-2 mt-4">
-                  <a href="#" className="bg-white text-[#3c2463] w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors">
+                  <a href="/blogs" title="Read our Blogs" className="bg-white text-[#3c2463] w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors">
                     <Rss className="w-4 h-4 fill-current" />
                   </a>
-                  <a href="#" className="bg-white text-[#3c2463] w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors">
+                  <a href="mailto:?subject=Check%20out%20ADHD%20Proud&body=Check%20out%20this%20amazing%20store:%20https://adhdproud.com" title="Share with a friend" className="bg-white text-[#3c2463] w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors">
                     <Share2 className="w-4 h-4 fill-current" />
                   </a>
-                  <a href="#" className="bg-white text-[#3c2463] w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors">
+                  <a href="/about" title="About Us" className="bg-white text-[#3c2463] w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors">
                     <Globe className="w-4 h-4 fill-current" />
                   </a>
-                  <a href="#" className="bg-white text-[#3c2463] w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors">
+                  <a href="/contact" title="Contact Us" className="bg-white text-[#3c2463] w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors">
                     <MessagesSquare className="w-4 h-4 fill-current" />
                   </a>
                 </li>

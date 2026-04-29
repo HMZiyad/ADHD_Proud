@@ -1,6 +1,9 @@
+"use client";
+
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Mail } from "lucide-react";
+import { useState } from "react";
 
 // Inline SVG for Instagram
 const Instagram = ({ className }: { className?: string }) => (
@@ -41,6 +44,17 @@ const Twitter = ({ className }: { className?: string }) => (
 );
 
 export default function Contact() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleContactSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const subject = encodeURIComponent(`Contact Form: Message from ${name}`);
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
+    window.location.href = `mailto:elnatanrudolph@gmail.com?subject=${subject}&body=${body}`;
+  };
+
   return (
     <main className="min-h-screen flex flex-col bg-white">
       <Navbar bg="bg-[#808080]" />
@@ -64,13 +78,16 @@ export default function Contact() {
             <h2 className="text-xl font-bold text-gray-800 text-center mb-2">Send us a Message</h2>
             <p className="text-gray-400 text-sm text-center mb-8">Fill out the form and our team will respond within 24 hours.</p>
             
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleContactSubmit}>
               <div>
                 <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">Name</label>
                 <input 
                   type="text" 
                   id="name" 
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   placeholder="Your name" 
+                  required
                   className="w-full bg-gray-50 border border-transparent rounded-lg px-4 py-3 text-sm focus:bg-white focus:border-[#3b82f6] outline-none transition-all placeholder:text-gray-300"
                 />
               </div>
@@ -80,7 +97,10 @@ export default function Contact() {
                 <input 
                   type="email" 
                   id="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="your.email@example.com" 
+                  required
                   className="w-full bg-gray-50 border border-transparent rounded-lg px-4 py-3 text-sm focus:bg-white focus:border-[#3b82f6] outline-none transition-all placeholder:text-gray-300"
                 />
               </div>
@@ -90,7 +110,10 @@ export default function Contact() {
                 <textarea 
                   id="message" 
                   rows={4} 
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
                   placeholder="Type your message" 
+                  required
                   className="w-full bg-gray-50 border border-transparent rounded-lg px-4 py-3 text-sm focus:bg-white focus:border-[#3b82f6] outline-none transition-all placeholder:text-gray-300 resize-none"
                 ></textarea>
               </div>
@@ -115,8 +138,8 @@ export default function Contact() {
               </div>
               <div>
                 <h3 className="text-lg font-bold text-gray-800">Email</h3>
-                <a href="mailto:support@adhdproud.com" className="text-[#3b82f6] font-medium hover:underline text-base">
-                  support@adhdproud.com
+                <a href="mailto:elnatanrudolph@gmail.com" className="text-[#3b82f6] font-medium hover:underline text-base">
+                  elnatanrudolph@gmail.com
                 </a>
                 <p className="text-gray-500 text-xs mt-1 font-medium">We typically respond within 24-48 hours</p>
               </div>

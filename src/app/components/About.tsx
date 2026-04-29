@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function About() {
   return (
@@ -32,9 +33,11 @@ export default function About() {
             A space where your thoughts are valued, your creativity is encouraged,
             and your differences are what connect you with others.
           </p>
-          <button className="bg-[#3b82f6] text-white px-8 py-3 rounded-full font-bold text-sm tracking-wide hover:bg-blue-600 transition-all shadow-lg shadow-blue-500/20">
-            Read our story
-          </button>
+          <Link href="/about">
+            <button className="bg-[#3b82f6] text-white px-8 py-3 rounded-full font-bold text-sm tracking-wide hover:bg-blue-600 transition-all shadow-lg shadow-blue-500/20">
+              Read our story
+            </button>
+          </Link>
         </div>
       </div>
     </section>

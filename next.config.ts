@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // output: 'export', // Removed to allow dynamic routes (e.g., /products/[id]) to build without generateStaticParams
   images: {
     unoptimized: true,
     remotePatterns: [

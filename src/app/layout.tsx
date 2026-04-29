@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope, Bebas_Neue } from "next/font/google";
 import "./globals.css";
+import SmoothScrolling from "./components/SmoothScrolling";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -28,7 +29,11 @@ export default function RootLayout({
       lang="en"
       className={`${manrope.variable} ${bebasNeue.variable} antialiased`}
     >
-      <body suppressHydrationWarning className="bg-white text-black font-sans leading-relaxed">{children}</body>
+      <body suppressHydrationWarning className="bg-white text-black font-sans leading-relaxed">
+        <SmoothScrolling>
+          {children}
+        </SmoothScrolling>
+      </body>
     </html>
   );
 }
